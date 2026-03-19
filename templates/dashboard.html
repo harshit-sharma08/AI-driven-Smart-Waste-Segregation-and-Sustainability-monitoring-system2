@@ -8,20 +8,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg:       #0a0f0a;
-      --surface:  #111911;
-      --surface2: #162016;
-      --border:   #1e2e1e;
-      --green:    #4ade80;
-      --text:     #e8f5e8;
-      --muted:    #6b7c6b;
-      --error:    #f87171;
-      --yellow:   #fbbf24;
-      --blue:     #60a5fa;
-      --orange:   #fb923c;
+      --bg:      #0a0f0a;
+      --surface: #111911;
+      --surface2:#162016;
+      --border:  #1e2e1e;
+      --green:   #4ade80;
+      --text:    #e8f5e8;
+      --muted:   #6b7c6b;
+      --error:   #f87171;
+      --yellow:  #fbbf24;
+      --blue:    #60a5fa;
+      --orange:  #fb923c;
+      --gray:    #9ca3af;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     body {
       background: var(--bg);
@@ -32,653 +33,630 @@
 
     /* ── Navbar ── */
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 16px 32px;
       border-bottom: 1px solid var(--border);
       background: var(--surface);
-      position: sticky; top: 0; z-index: 100;
+      position: sticky; top:0; z-index:100;
     }
-
     .nav-logo {
       display: flex; align-items: center; gap: 10px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 18px;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
     }
     .nav-logo span { color: var(--green); }
     .nav-logo .icon {
-      width: 34px; height: 34px;
-      background: var(--green); border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
+      width:34px; height:34px; background:var(--green);
+      border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px;
     }
-
-    .nav-right { display: flex; align-items: center; gap: 16px; }
-
+    .nav-right { display:flex; align-items:center; gap:16px; }
     .user-badge {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
-      color: var(--muted);
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:20px; padding:6px 14px; font-size:13px; color:var(--muted);
     }
-    .user-badge strong { color: var(--text); }
-
+    .user-badge strong { color:var(--text); }
     .logout-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 7px 16px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); padding:7px 16px; border-radius:8px;
+      font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; transition:all 0.2s;
     }
-    .logout-btn:hover { border-color: var(--error); color: var(--error); }
+    .logout-btn:hover { border-color:var(--error); color:var(--error); }
 
-    /* ── Main Layout ── */
+    /* ── Layout ── */
     .main {
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 1300px; margin: 0 auto;
       padding: 32px 24px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
 
-    /* ── Cards ── */
+    /* ── Card ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
+      border-radius: 16px; padding: 28px;
+      animation: fadeUp 0.4s ease both;
     }
-
     .card-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      margin-bottom: 20px;
-      display: flex; align-items: center; gap: 8px;
+      font-family:'Syne',sans-serif; font-weight:700; font-size:16px;
+      margin-bottom:20px; display:flex; align-items:center; gap:8px;
     }
-
-    .card-title .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-    }
-
-    /* ── Upload Section ── */
-    .upload-card { grid-column: 1 / 2; }
-
-    .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 40px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-    }
-
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color: var(--green);
-      background: rgba(74, 222, 128, 0.04);
-    }
-
-    .drop-zone input[type="file"] {
-      position: absolute; inset: 0;
-      opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
-
-    .drop-icon { font-size: 40px; margin-bottom: 12px; }
-
-    .drop-text {
-      font-size: 14px; color: var(--muted); margin-bottom: 4px;
-    }
-
-    .drop-text strong { color: var(--green); }
-
-    /* Preview image */
-    #previewImg {
-      width: 100%; border-radius: 10px;
-      margin-top: 16px; display: none;
-      max-height: 200px; object-fit: cover;
-      border: 1px solid var(--border);
-    }
-
-    .predict-btn {
-      width: 100%; margin-top: 16px;
-      padding: 13px;
-      background: var(--green);
-      color: #0a0f0a;
-      border: none; border-radius: 10px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 15px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-      display: none;
-    }
-
-    .predict-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 25px rgba(74,222,128,0.3);
-    }
-    .predict-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-    /* ── Result Section ── */
-    .result-card { grid-column: 2 / 3; }
-
-    .result-empty {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      height: 200px; color: var(--muted); font-size: 14px; gap: 10px;
-    }
-
-    .result-empty .big { font-size: 40px; }
-
-    .result-box { display: none; }
-
-    .result-label {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 36px;
-      margin-bottom: 4px;
-    }
-
-    .result-conf {
-      font-size: 14px; color: var(--muted); margin-bottom: 20px;
-    }
-
-    .bin-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: 600; font-size: 15px;
-      margin-bottom: 20px;
-      border: 2px solid;
-    }
-
-    .result-bar-wrap {
-      background: var(--surface2);
-      border-radius: 8px;
-      height: 8px; overflow: hidden; margin-bottom: 6px;
-    }
-
-    .result-bar-fill {
-      height: 100%; border-radius: 8px;
-      background: var(--green);
-      transition: width 1s ease;
-    }
-
-    .result-bar-label {
-      font-size: 12px; color: var(--muted);
-    }
+    .card-title .dot { width:8px; height:8px; border-radius:50%; background:var(--green); }
 
     /* ── Stats Row ── */
     .stats-row {
       grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+      display: grid; grid-template-columns: repeat(4,1fr); gap:16px;
     }
-
     .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px;
-      text-align: center;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:16px; padding:22px; text-align:center;
+      animation: fadeUp 0.4s ease both;
     }
-
     .stat-num {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 32px;
-      color: var(--green);
-      margin-bottom: 4px;
+      font-family:'Syne',sans-serif; font-weight:800; font-size:32px;
+      color:var(--green); margin-bottom:4px;
     }
+    .stat-label { font-size:13px; color:var(--muted); }
 
-    .stat-label {
-      font-size: 13px; color: var(--muted);
+    /* ── Upload Card ── */
+    .upload-card { grid-column: 1/2; }
+    .drop-zone {
+      border:2px dashed var(--border); border-radius:12px;
+      padding:36px 20px; text-align:center; cursor:pointer;
+      transition:all 0.2s; position:relative;
     }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color:var(--green); background:rgba(74,222,128,0.04);
+    }
+    .drop-zone input[type="file"] {
+      position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+    }
+    .drop-icon { font-size:36px; margin-bottom:10px; }
+    .drop-text { font-size:14px; color:var(--muted); }
+    .drop-text strong { color:var(--green); }
+    #previewImg {
+      width:100%; border-radius:10px; margin-top:16px; display:none;
+      max-height:180px; object-fit:cover; border:1px solid var(--border);
+    }
+    .predict-btn {
+      width:100%; margin-top:16px; padding:13px;
+      background:var(--green); color:#0a0f0a; border:none; border-radius:10px;
+      font-family:'Syne',sans-serif; font-weight:700; font-size:15px;
+      cursor:pointer; transition:all 0.2s; display:none;
+    }
+    .predict-btn:hover { transform:translateY(-1px); box-shadow:0 8px 25px rgba(74,222,128,0.3); }
+    .predict-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
-    /* ── Chart ── */
-    .chart-card {
-      grid-column: 1 / 2;
-      display: flex; flex-direction: column;
+    /* ── Result Card ── */
+    .result-card { grid-column: 2/3; }
+    .result-empty {
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; height:200px; color:var(--muted); font-size:14px; gap:10px;
     }
+    .result-empty .big { font-size:40px; }
+    .result-box { display:none; }
+    .result-label {
+      font-family:'Syne',sans-serif; font-weight:800; font-size:36px; margin-bottom:4px;
+    }
+    .result-conf { font-size:14px; color:var(--muted); margin-bottom:16px; }
+    .bin-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 20px; border-radius:30px; font-weight:600;
+      font-size:15px; margin-bottom:16px; border:2px solid;
+    }
+    .result-bar-wrap {
+      background:var(--surface2); border-radius:8px; height:8px; overflow:hidden; margin-bottom:6px;
+    }
+    .result-bar-fill { height:100%; border-radius:8px; background:var(--green); transition:width 1s ease; }
+    .result-bar-label { font-size:12px; color:var(--muted); }
 
-    .chart-wrap {
-      position: relative; height: 220px;
-      display: flex; align-items: center; justify-content: center;
+    /* ── Gauge Card ── */
+    .gauge-card { grid-column: 1/2; }
+    .gauge-wrap {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:10px 0;
     }
+    .gauge-svg { width:220px; height:130px; }
+    .gauge-num {
+      font-family:'Syne',sans-serif; font-weight:800; font-size:42px;
+      color:var(--green); text-align:center; margin-top:-10px;
+    }
+    .gauge-sublabel { font-size:13px; color:var(--muted); text-align:center; margin-top:4px; }
+    .gauge-legend {
+      display:flex; justify-content:center; gap:24px; margin-top:16px; flex-wrap:wrap;
+    }
+    .gauge-legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+    .gauge-legend-dot { width:10px; height:10px; border-radius:50%; }
+
+    /* ── Charts ── */
+    .chart-card { grid-column: 2/3; }
+    .line-card   { grid-column: 1/2; }
+    .bar-card    { grid-column: 2/3; }
+
+    .chart-wrap { position:relative; height:220px; }
 
     /* ── History Table ── */
-    .history-card { grid-column: 2 / 3; }
-
-    .table-wrap { overflow-x: auto; }
-
-    table {
-      width: 100%; border-collapse: collapse; font-size: 13px;
-    }
-
+    .history-card { grid-column: 1/-1; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
     th {
-      text-align: left; padding: 10px 12px;
-      color: var(--muted); font-weight: 500;
-      border-bottom: 1px solid var(--border);
-      text-transform: uppercase; letter-spacing: 0.4px; font-size: 11px;
+      text-align:left; padding:10px 12px; color:var(--muted);
+      font-weight:500; border-bottom:1px solid var(--border);
+      text-transform:uppercase; letter-spacing:0.4px; font-size:11px;
     }
-
-    td {
-      padding: 12px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface2); }
-
+    td { padding:12px; border-bottom:1px solid var(--border); color:var(--text); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:var(--surface2); }
     .badge {
-      display: inline-block;
-      padding: 3px 10px; border-radius: 20px;
-      font-size: 12px; font-weight: 600;
+      display:inline-block; padding:3px 10px;
+      border-radius:20px; font-size:12px; font-weight:600;
     }
+    .empty-table { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
 
-    .empty-table {
-      text-align: center; padding: 40px;
-      color: var(--muted); font-size: 14px;
-    }
-
-    /* Message toast */
+    /* ── Toast ── */
     .toast {
-      position: fixed; bottom: 24px; right: 24px;
-      padding: 14px 20px; border-radius: 10px;
-      font-size: 14px; font-weight: 500;
-      display: none; z-index: 999;
-      animation: slideInRight 0.3s ease;
+      position:fixed; bottom:24px; right:24px;
+      padding:14px 20px; border-radius:10px; font-size:14px;
+      font-weight:500; display:none; z-index:999;
     }
-    .toast.error   { background: rgba(248,113,113,0.15); border: 1px solid var(--error); color: var(--error); }
-    .toast.success { background: rgba(74,222,128,0.15);  border: 1px solid var(--green); color: var(--green); }
-    .toast.show    { display: block; }
+    .toast.error   { background:rgba(248,113,113,0.15); border:1px solid var(--error); color:var(--error); }
+    .toast.success { background:rgba(74,222,128,0.15);  border:1px solid var(--green); color:var(--green); }
+    .toast.show    { display:block; animation:slideInRight 0.3s ease; }
 
     @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
+      from { opacity:0; transform:translateX(20px); }
+      to   { opacity:1; transform:translateX(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(16px); }
+      to   { opacity:1; transform:translateY(0); }
     }
 
     .spinner {
-      display: inline-block; width: 16px; height: 16px;
-      border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
-      border-radius: 50%; animation: spin 0.6s linear infinite;
-      vertical-align: middle; margin-right: 6px;
+      display:inline-block; width:16px; height:16px;
+      border:2px solid rgba(0,0,0,0.3); border-top-color:#000;
+      border-radius:50%; animation:spin 0.6s linear infinite;
+      vertical-align:middle; margin-right:6px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Animations */
-    .card { animation: fadeUp 0.4s ease both; }
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.10s; }
-    .card:nth-child(3) { animation-delay: 0.15s; }
-    .card:nth-child(4) { animation-delay: 0.20s; }
-    .stat-card { animation: fadeUp 0.4s ease both; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes spin { to { transform:rotate(360deg); } }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav>
-    <div class="nav-logo">
-      <div class="icon">♻️</div>
-      Waste<span>AI</span>
+<!-- Navbar -->
+<nav>
+  <div class="nav-logo">
+    <div class="icon">♻️</div>
+    Waste<span>AI</span>
+  </div>
+  <div class="nav-right">
+    <div class="user-badge">Logged in as <strong id="navUsername">...</strong></div>
+    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- ── Stats Row ── -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">Total Scans</div>
     </div>
-    <div class="nav-right">
-      <div class="user-badge">Logged in as <strong id="navUsername">...</strong></div>
-      <button class="logout-btn" onclick="handleLogout()">Logout</button>
+    <div class="stat-card">
+      <div class="stat-num" id="statRecycle">0%</div>
+      <div class="stat-label">Recycling Rate</div>
     </div>
-  </nav>
-
-  <!-- Main Grid -->
-  <div class="main">
-
-    <!-- Upload Card -->
-    <div class="card upload-card">
-      <div class="card-title"><div class="dot"></div> Scan Waste</div>
-
-      <div class="drop-zone" id="dropZone">
-        <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)"/>
-        <div class="drop-icon">📷</div>
-        <div class="drop-text"><strong>Click to upload</strong> or drag & drop</div>
-        <div class="drop-text">JPG, PNG, WEBP supported</div>
-      </div>
-
-      <img id="previewImg" src="" alt="Preview"/>
-
-      <button class="predict-btn" id="predictBtn" onclick="handlePredict()">
-        🔍 Classify Waste
-      </button>
+    <div class="stat-card">
+      <div class="stat-num" id="statTop">—</div>
+      <div class="stat-label">Most Common</div>
     </div>
-
-    <!-- Result Card -->
-    <div class="card result-card">
-      <div class="card-title"><div class="dot"></div> Prediction Result</div>
-
-      <div class="result-empty" id="resultEmpty">
-        <div class="big">🗑️</div>
-        <div>Upload an image to see the prediction</div>
-      </div>
-
-      <div class="result-box" id="resultBox">
-        <div class="result-label" id="resultLabel">—</div>
-        <div class="result-conf"  id="resultConf">—</div>
-        <div class="bin-badge"    id="binBadge">—</div>
-        <div class="result-bar-wrap">
-          <div class="result-bar-fill" id="resultBar" style="width:0%"></div>
-        </div>
-        <div class="result-bar-label" id="resultBarLabel"></div>
-      </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statOrganic">0</div>
+      <div class="stat-label">Organic Waste</div>
     </div>
-
-    <!-- Stats Row -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-num"   id="statTotal">0</div>
-        <div class="stat-label">Total Scans</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num"   id="statRecycle">0%</div>
-        <div class="stat-label">Recycling Rate</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num"   id="statTop">—</div>
-        <div class="stat-label">Most Common</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num"   id="statOrganic">0</div>
-        <div class="stat-label">Organic Waste</div>
-      </div>
-    </div>
-
-    <!-- Chart Card -->
-    <div class="card chart-card">
-      <div class="card-title"><div class="dot"></div> Waste Breakdown</div>
-      <div class="chart-wrap">
-        <canvas id="wasteChart"></canvas>
-      </div>
-    </div>
-
-    <!-- History Card -->
-    <div class="card history-card">
-      <div class="card-title"><div class="dot"></div> Recent Predictions</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Category</th>
-              <th>Bin</th>
-              <th>Confidence</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody">
-            <tr><td colspan="5" class="empty-table">No predictions yet</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Toast notification -->
-  <div class="toast" id="toast"></div>
+  <!-- ── Upload Card ── -->
+  <div class="card upload-card">
+    <div class="card-title"><div class="dot"></div> Scan Waste</div>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)"/>
+      <div class="drop-icon">📷</div>
+      <div class="drop-text"><strong>Click to upload</strong> or drag & drop</div>
+      <div class="drop-text">JPG, PNG, WEBP supported</div>
+    </div>
+    <img id="previewImg" src="" alt="Preview"/>
+    <button class="predict-btn" id="predictBtn" onclick="handlePredict()">
+      🔍 Classify Waste
+    </button>
+  </div>
 
-  <script>
-    // ── Color map for each waste category ──
-    const COLORS = {
-      Plastic: { bg: '#FFD700', text: '#000', label: '🟡 Yellow Bin' },
-      Paper:   { bg: '#60a5fa', text: '#000', label: '🔵 Blue Bin'   },
-      Organic: { bg: '#4ade80', text: '#000', label: '🟢 Green Bin'  },
-      Metal:   { bg: '#9ca3af', text: '#000', label: '⚫ Grey Bin'   },
+  <!-- ── Result Card ── -->
+  <div class="card result-card">
+    <div class="card-title"><div class="dot"></div> Prediction Result</div>
+    <div class="result-empty" id="resultEmpty">
+      <div class="big">🗑️</div>
+      <div>Upload an image to see the prediction</div>
+    </div>
+    <div class="result-box" id="resultBox">
+      <div class="result-label" id="resultLabel">—</div>
+      <div class="result-conf"  id="resultConf">—</div>
+      <div class="bin-badge"    id="binBadge">—</div>
+      <div class="result-bar-wrap">
+        <div class="result-bar-fill" id="resultBar" style="width:0%"></div>
+      </div>
+      <div class="result-bar-label" id="resultBarLabel"></div>
+    </div>
+  </div>
+
+  <!-- ── Recycling Rate Gauge ── -->
+  <div class="card gauge-card">
+    <div class="card-title"><div class="dot"></div> Recycling Rate Gauge</div>
+    <div class="gauge-wrap">
+      <svg class="gauge-svg" viewBox="0 0 220 130">
+        <!-- Background arc -->
+        <path d="M 20 110 A 90 90 0 0 1 200 110"
+              fill="none" stroke="#1e2e1e" stroke-width="18" stroke-linecap="round"/>
+        <!-- Foreground arc (animated) -->
+        <path id="gaugeFill" d="M 20 110 A 90 90 0 0 1 200 110"
+              fill="none" stroke="#4ade80" stroke-width="18" stroke-linecap="round"
+              stroke-dasharray="283" stroke-dashoffset="283"
+              style="transition: stroke-dashoffset 1.5s ease;"/>
+        <!-- Zone labels -->
+        <text x="18"  y="128" fill="#6b7c6b" font-size="10">0%</text>
+        <text x="100" y="22"  fill="#6b7c6b" font-size="10" text-anchor="middle">50%</text>
+        <text x="192" y="128" fill="#6b7c6b" font-size="10">100%</text>
+      </svg>
+      <div class="gauge-num"     id="gaugeNum">0%</div>
+      <div class="gauge-sublabel">of waste is recyclable</div>
+      <div class="gauge-legend">
+        <div class="gauge-legend-item">
+          <div class="gauge-legend-dot" style="background:#4ade80"></div> Recyclable
+        </div>
+        <div class="gauge-legend-item">
+          <div class="gauge-legend-dot" style="background:#1e2e1e"></div> Organic
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Doughnut Chart ── -->
+  <div class="card chart-card">
+    <div class="card-title"><div class="dot"></div> Waste Category Breakdown</div>
+    <div class="chart-wrap">
+      <canvas id="donutChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Line Chart ── -->
+  <div class="card line-card">
+    <div class="card-title"><div class="dot"></div> Waste Scanned Over Time</div>
+    <div class="chart-wrap">
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Bar Chart ── -->
+  <div class="card bar-card">
+    <div class="card-title"><div class="dot"></div> Category Comparison</div>
+    <div class="chart-wrap">
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ── History Table ── -->
+  <div class="card history-card">
+    <div class="card-title"><div class="dot"></div> Recent Predictions</div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th>Bin Assigned</th>
+          <th>Confidence</th>
+          <th>Date & Time</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody">
+        <tr><td colspan="5" class="empty-table">No predictions yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Color map ──
+  const COLORS = {
+    Plastic: { bg:'#FFD700', text:'#000', label:'🟡 Yellow Bin' },
+    Paper:   { bg:'#60a5fa', text:'#000', label:'🔵 Blue Bin'   },
+    Organic: { bg:'#4ade80', text:'#000', label:'🟢 Green Bin'  },
+    Metal:   { bg:'#9ca3af', text:'#000', label:'⚫ Grey Bin'   },
+  };
+
+  let selectedFile = null;
+  let donutChart   = null;
+  let lineChart    = null;
+  let barChart     = null;
+
+  // ── On page load ──
+  window.addEventListener('load', async () => {
+    await fetchUser();
+    await fetchStats();
+    await fetchLineChart();
+    await fetchBarChart();
+    await fetchHistory();
+  });
+
+  // ── Drag & Drop ──
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) loadPreview(file);
+  });
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (file) loadPreview(file);
+  }
+
+  function loadPreview(file) {
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.getElementById('previewImg');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('predictBtn').style.display = 'block';
     };
+    reader.readAsDataURL(file);
+  }
 
-    let selectedFile = null;
-    let wasteChart   = null;
+  // ── Predict ──
+  async function handlePredict() {
+    if (!selectedFile) return;
+    const btn = document.getElementById('predictBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Classifying...';
 
-    // ── On page load ──
-    window.addEventListener('load', async () => {
-      await fetchUser();
-      await fetchStats();
-      await fetchHistory();
-    });
+    const formData = new FormData();
+    formData.append('image', selectedFile);
 
-    // ── Drag & Drop ──
-    const dropZone = document.getElementById('dropZone');
-    dropZone.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-    dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file) loadPreview(file);
-    });
+    try {
+      const res  = await fetch('/api/predict', { method:'POST', body:formData });
+      const data = await res.json();
 
-    function handleFileSelect(e) {
-      const file = e.target.files[0];
-      if (file) loadPreview(file);
-    }
-
-    function loadPreview(file) {
-      selectedFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = document.getElementById('previewImg');
-        img.src = e.target.result;
-        img.style.display = 'block';
-        document.getElementById('predictBtn').style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // ── Predict ──
-    async function handlePredict() {
-      if (!selectedFile) return;
-
-      const btn = document.getElementById('predictBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>Classifying...';
-
-      const formData = new FormData();
-      formData.append('image', selectedFile);
-
-      try {
-        const res  = await fetch('/api/predict', { method: 'POST', body: formData });
-        const data = await res.json();
-
-        if (res.ok) {
-          showResult(data);
-          await fetchStats();
-          await fetchHistory();
-          showToast('Waste classified successfully!', 'success');
-        } else {
-          showToast(data.error || 'Prediction failed.', 'error');
-        }
-
-      } catch (err) {
-        showToast('Cannot connect to server.', 'error');
+      if (res.ok) {
+        showResult(data);
+        await fetchStats();
+        await fetchLineChart();
+        await fetchBarChart();
+        await fetchHistory();
+        showToast('Waste classified successfully!', 'success');
+      } else {
+        showToast(data.error || 'Prediction failed.', 'error');
       }
-
-      btn.disabled = false;
-      btn.innerHTML = '🔍 Classify Waste';
+    } catch {
+      showToast('Cannot connect to server.', 'error');
     }
 
-    // ── Show prediction result ──
-    function showResult(data) {
-      document.getElementById('resultEmpty').style.display = 'none';
-      const box = document.getElementById('resultBox');
-      box.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Classify Waste';
+  }
 
-      const color = COLORS[data.label] || { bg: '#4ade80', text: '#000', label: data.bin };
+  // ── Show Result ──
+  function showResult(data) {
+    document.getElementById('resultEmpty').style.display = 'none';
+    const box   = document.getElementById('resultBox');
+    box.style.display = 'block';
+    const color = COLORS[data.label] || { bg:'#4ade80', text:'#000', label: data.bin };
 
-      document.getElementById('resultLabel').textContent = data.label;
-      document.getElementById('resultLabel').style.color = color.bg;
+    document.getElementById('resultLabel').textContent = data.label;
+    document.getElementById('resultLabel').style.color = color.bg;
+    document.getElementById('resultConf').textContent  = `Model confidence: ${data.confidence}%`;
 
-      document.getElementById('resultConf').textContent =
-        `Model confidence: ${data.confidence}%`;
+    const badge = document.getElementById('binBadge');
+    badge.textContent      = color.label;
+    badge.style.color      = color.bg;
+    badge.style.borderColor= color.bg;
+    badge.style.background = color.bg + '18';
 
-      const badge = document.getElementById('binBadge');
-      badge.textContent       = color.label;
-      badge.style.color       = color.bg;
-      badge.style.borderColor = color.bg;
-      badge.style.background  = color.bg + '18';
+    setTimeout(() => {
+      document.getElementById('resultBar').style.width      = data.confidence + '%';
+      document.getElementById('resultBar').style.background = color.bg;
+    }, 100);
+    document.getElementById('resultBarLabel').textContent = `${data.confidence}% confident`;
+  }
 
-      // Animate confidence bar
-      setTimeout(() => {
-        document.getElementById('resultBar').style.width       = data.confidence + '%';
-        document.getElementById('resultBar').style.background  = color.bg;
-      }, 100);
-      document.getElementById('resultBarLabel').textContent = `${data.confidence}% confident`;
-    }
+  // ── Fetch Stats + update gauge + donut ──
+  async function fetchStats() {
+    try {
+      const res  = await fetch('/api/predictions/stats');
+      const data = await res.json();
 
-    // ── Fetch & update stats ──
-    async function fetchStats() {
-      try {
-        const res  = await fetch('/api/predictions/stats');
-        const data = await res.json();
+      document.getElementById('statTotal').textContent   = data.total;
+      document.getElementById('statRecycle').textContent = data.recycling_rate + '%';
+      document.getElementById('statOrganic').textContent = data.category_counts['Organic'] || 0;
 
-        document.getElementById('statTotal').textContent   = data.total;
-        document.getElementById('statRecycle').textContent = data.recycling_rate + '%';
-        document.getElementById('statOrganic').textContent = data.category_counts['Organic'] || 0;
+      const counts = data.category_counts;
+      const top    = Object.keys(counts).sort((a,b) => counts[b]-counts[a])[0];
+      document.getElementById('statTop').textContent = top || '—';
 
-        // Most common category
-        const counts = data.category_counts;
-        const top = Object.keys(counts).sort((a,b) => counts[b] - counts[a])[0];
-        document.getElementById('statTop').textContent = top || '—';
+      updateGauge(data.recycling_rate);
+      updateDonut(data.category_counts);
+    } catch(e) { console.error(e); }
+  }
 
-        // Update chart
-        updateChart(data.category_counts);
+  // ── Gauge ──
+  function updateGauge(rate) {
+    const totalArcLength = 283;
+    const offset = totalArcLength - (rate / 100) * totalArcLength;
+    document.getElementById('gaugeFill').style.strokeDashoffset = offset;
 
-      } catch (err) {
-        console.error('Stats fetch failed:', err);
+    // Color changes based on rate
+    let color = '#f87171';              // red   0-40%
+    if (rate >= 70) color = '#4ade80';  // green 70-100%
+    else if (rate >= 40) color = '#fbbf24'; // yellow 40-70%
+    document.getElementById('gaugeFill').style.stroke = color;
+    document.getElementById('gaugeNum').style.color   = color;
+    document.getElementById('gaugeNum').textContent   = rate + '%';
+  }
+
+  // ── Donut Chart ──
+  function updateDonut(counts) {
+    const labels = Object.keys(counts);
+    const values = Object.values(counts);
+    const colors = labels.map(l => (COLORS[l] || {}).bg || '#4ade80');
+
+    if (donutChart) donutChart.destroy();
+    const ctx = document.getElementById('donutChart').getContext('2d');
+    donutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data:values, backgroundColor:colors, borderColor:'#111911', borderWidth:3, hoverOffset:8 }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: {
+          legend: { position:'bottom', labels:{ color:'#6b7c6b', font:{ family:'DM Sans', size:12 }, padding:16 }},
+          tooltip: { callbacks: { label:(ctx) => ` ${ctx.label}: ${ctx.raw} scans` }}
+        },
+        cutout:'65%',
       }
-    }
+    });
+  }
 
-    // ── Pie Chart ──
-    function updateChart(counts) {
-      const labels = Object.keys(counts);
-      const values = Object.values(counts);
-      const colors = labels.map(l => (COLORS[l] || {}).bg || '#4ade80');
+  // ── Line Chart ──
+  async function fetchLineChart() {
+    try {
+      const res  = await fetch('/api/predictions/linechart');
+      const data = await res.json();
 
-      if (wasteChart) wasteChart.destroy();
-
-      const ctx = document.getElementById('wasteChart').getContext('2d');
-      wasteChart = new Chart(ctx, {
-        type: 'doughnut',
+      if (lineChart) lineChart.destroy();
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      lineChart = new Chart(ctx, {
+        type: 'line',
         data: {
-          labels,
+          labels: data.labels.length ? data.labels : ['No data'],
           datasets: [{
-            data: values,
-            backgroundColor: colors,
-            borderColor: '#111911',
-            borderWidth: 3,
-            hoverOffset: 8,
+            label: 'Scans per Day',
+            data: data.values.length ? data.values : [0],
+            borderColor: '#4ade80',
+            backgroundColor: 'rgba(74,222,128,0.1)',
+            borderWidth: 2,
+            pointBackgroundColor: '#4ade80',
+            pointRadius: 5,
+            tension: 0.4,
+            fill: true,
           }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: '#6b7c6b',
-                font: { family: 'DM Sans', size: 12 },
-                padding: 16,
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => ` ${ctx.label}: ${ctx.raw} scans`
-              }
-            }
-          },
-          cutout: '65%',
+          responsive:true, maintainAspectRatio:false,
+          plugins: { legend:{ display:false } },
+          scales: {
+            x: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }}, grid:{ color:'#1e2e1e' }},
+            y: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }, stepSize:1 }, grid:{ color:'#1e2e1e' }, beginAtZero:true }
+          }
         }
       });
-    }
+    } catch(e) { console.error(e); }
+  }
 
-    // ── Fetch history ──
-    async function fetchHistory() {
-      try {
-        const res  = await fetch('/api/predictions/history');
-        const data = await res.json();
-        renderHistory(data.predictions);
-      } catch (err) {
-        console.error('History fetch failed:', err);
-      }
-    }
+  // ── Bar Chart ──
+  async function fetchBarChart() {
+    try {
+      const res  = await fetch('/api/predictions/barchart');
+      const data = await res.json();
+      const colors = data.labels.map(l => (COLORS[l] || {}).bg || '#4ade80');
 
-    function renderHistory(predictions) {
+      if (barChart) barChart.destroy();
+      const ctx = document.getElementById('barChart').getContext('2d');
+      barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels.length ? data.labels : ['No data'],
+          datasets: [{
+            label: 'Count',
+            data: data.values.length ? data.values : [0],
+            backgroundColor: data.labels.length ? colors.map(c => c + 'cc') : ['#1e2e1e'],
+            borderColor: data.labels.length ? colors : ['#1e2e1e'],
+            borderWidth: 2,
+            borderRadius: 8,
+          }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins: { legend:{ display:false } },
+          scales: {
+            x: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }}, grid:{ color:'#1e2e1e' }},
+            y: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }, stepSize:1 }, grid:{ color:'#1e2e1e' }, beginAtZero:true }
+          }
+        }
+      });
+    } catch(e) { console.error(e); }
+  }
+
+  // ── History Table ──
+  async function fetchHistory() {
+    try {
+      const res  = await fetch('/api/predictions/history');
+      const data = await res.json();
       const body = document.getElementById('historyBody');
 
-      if (!predictions || predictions.length === 0) {
+      if (!data.predictions || data.predictions.length === 0) {
         body.innerHTML = `<tr><td colspan="5" class="empty-table">No predictions yet</td></tr>`;
         return;
       }
 
-      body.innerHTML = predictions.slice(0, 10).map((p, i) => {
+      body.innerHTML = data.predictions.slice(0,10).map((p,i) => {
         const color = (COLORS[p.predicted_label] || {}).bg || '#4ade80';
         return `
           <tr>
-            <td style="color:var(--muted)">${i + 1}</td>
+            <td style="color:var(--muted)">${i+1}</td>
             <td>
-              <span class="badge"
-                style="background:${color}22; color:${color}; border:1px solid ${color}44">
+              <span class="badge" style="background:${color}22; color:${color}; border:1px solid ${color}44">
                 ${p.predicted_label}
               </span>
             </td>
             <td style="color:var(--muted); font-size:12px">${p.bin_assigned}</td>
             <td style="color:var(--green)">${p.confidence}%</td>
             <td style="color:var(--muted); font-size:12px">${p.timestamp}</td>
-          </tr>
-        `;
+          </tr>`;
       }).join('');
-    }
+    } catch(e) { console.error(e); }
+  }
 
-    // ── Fetch logged in user ──
-    async function fetchUser() {
-      try {
-        const res  = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (res.ok) {
-          document.getElementById('navUsername').textContent = data.user.username;
-        } else {
-          window.location.href = '/login';
-        }
-      } catch {
-        window.location.href = '/login';
-      }
-    }
+  // ── Fetch User ──
+  async function fetchUser() {
+    try {
+      const res  = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (res.ok) document.getElementById('navUsername').textContent = data.user.username;
+      else window.location.href = '/api/auth/login';
+    } catch { window.location.href = '/api/auth/login'; }
+  }
 
-    // ── Logout ──
-    async function handleLogout() {
-      window.location.href = '/api/auth/logout';
-    }
+  // ── Logout ──
+  async function handleLogout() {
+    window.location.href = '/api/auth/logout';
+  }
 
-    // ── Toast ──
-    function showToast(msg, type = 'success') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className   = `toast ${type} show`;
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
-  </script>
+  // ── Toast ──
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
 
 </body>
 </html>

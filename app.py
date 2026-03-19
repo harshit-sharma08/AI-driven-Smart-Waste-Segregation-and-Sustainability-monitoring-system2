@@ -202,6 +202,32 @@ def health():
         "model_loaded": model is not None,
 
     }),200
+@app.route('/api/predictions/linechart',methods = ['GET'])
+@login_required
+def linechart_data():
+    from sqlalchemy import func,cast,Date
+    results = (
+        db.session.query(
+            cast(Prediction.timestamp,Date).label("date"),
+            func.count(Prediction.id).label("count")
+        )
+        .filter_by(user_id = current_user.id).group_by(cast(Prediction.timestamp,Date)).order_by(cast(Prediction.timestamp,Date)).limit(7).all()
+    )
+    return jsonify({
+        "labels":[str(r.date) for r in results],
+        "values":[r.count for r in results]
+    }),200
+@app.route('/api/predictions/barchart',methods = ['GET'])
+@login_required
+def barchart_data():
+    preds = Prediction.query.filter_by(user_id = current_user.id).all()
+    counts = {}
+    for p in preds:
+        counts[p.predicted_label] = counts.get(p.predicted_label,0) + 1
+        return jsonify({
+            "labels":list(counts.keys()),
+            "values":list(counts.values())
+        }),200
 
 if __name__ == "__main__":
     with app.app_context():
