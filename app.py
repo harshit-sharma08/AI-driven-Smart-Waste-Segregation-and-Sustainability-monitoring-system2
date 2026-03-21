@@ -10,6 +10,7 @@ from flask_cors import CORS
 from PIL import Image
 import tensorflow as tf
 from dotenv import load_dotenv
+import io
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
@@ -228,6 +229,31 @@ def barchart_data():
             "labels":list(counts.keys()),
             "values":list(counts.values())
         }),200
+@app.route("/api/esp32/trigger", methods=["POST"])
+def esp32_trigger():
+    token = request.headers.get("X-Hardware-Token", "")
+    if token != os.environ.get("HARDWARE_TOKEN"):
+        return jsonify({"error": "Invalid token"}), 403
+
+    img_bytes = request.data
+    img       = Image.open(io.BytesIO(img_bytes))
+    label, confidence = run(img)
+    bin_info  = BIN_MAP.get(label, {"bin": "Unknown"})
+    image_path = save_image(img, label)
+
+    pred = Prediction(
+        user_id=1, image_path=image_path,
+        predicted_label=label, confidence=confidence,
+        bin_assigned=bin_info["bin"]
+    )
+    db.session.add(pred)
+    db.session.commit()
+
+    return jsonify({
+        "label":      label,
+        "confidence": round(confidence * 100, 2),
+        "bin":        bin_info["bin"],
+    }), 200
 
 if __name__ == "__main__":
     with app.app_context():
