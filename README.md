@@ -24,6 +24,18 @@ The **AI-Driven Smart Waste Segregation and Sustainability Monitoring System** i
 
 A **MobileNetV2-based CNN model** identifies waste categories from a camera feed and classifies them into 4 categories — Plastic, Paper, Organic, and Metal. The system logs every prediction to a database and displays real-time sustainability statistics on a web dashboard. It also supports user authentication and will trigger physical bin sorting mechanisms via an ESP32 microcontroller.
 
+## ▶️ How to Run (Detailed)
+
+1. Clone the repository and navigate into the project folder.
+2. Install all required Python dependencies using `pip install -r requirements.txt`.
+3. Ensure the trained MobileNet model file is placed correctly inside the `model/` directory.
+4. Configure environment variables in the `.env` file.
+5. Start the Flask development server using `python app.py`.
+6. Open your browser and visit `http://127.0.0.1:5000`.
+7. Register a new account or use the default admin credentials to log in.
+
+> ⚠️ Make sure your system has Python 3.8+ and pip installed.
+
 ---
 
 ## ✨ Features
@@ -211,6 +223,13 @@ A default admin account is created automatically on first run:
 6. Servo opens the correct bin flap for that waste category
 7. Ultrasonic sensors continuously monitor bin fill levels
 8. Fill level data is sent to the dashboard for monitoring
+
+
+## 🚀 Future Improvements
+
+- Real-time ESP32 camera streaming integration
+- Cloud deployment (AWS / Azure)
+- Mobile app support
 
 ---
 
