@@ -233,6 +233,10 @@ A default admin account is created automatically on first run:
 
 ---
 
+## 📄 License
+
+This project is developed for educational purposes and is free to use for learning and research.
+
 ## 👥 Contributors
 
 
