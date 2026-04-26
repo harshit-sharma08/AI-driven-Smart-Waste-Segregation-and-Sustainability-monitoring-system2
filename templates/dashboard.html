@@ -4,659 +4,734 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard — WasteAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui'],
+            display: ['Syne', 'ui-sans-serif', 'system-ui'],
+          },
+        },
+      },
+    };
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
   <style>
     :root {
-      --bg:      #0a0f0a;
-      --surface: #111911;
-      --surface2:#162016;
-      --border:  #1e2e1e;
-      --green:   #4ade80;
-      --text:    #e8f5e8;
-      --muted:   #6b7c6b;
-      --error:   #f87171;
-      --yellow:  #fbbf24;
-      --blue:    #60a5fa;
-      --orange:  #fb923c;
-      --gray:    #9ca3af;
-    }
+      --bg0: #060a07;
+      --bg1: #06140b;
 
-    * { margin:0; padding:0; box-sizing:border-box; }
+      --card: rgba(17, 25, 40, 0.55);
+      --card2: rgba(15, 23, 42, 0.55);
+      --border: rgba(134, 239, 172, 0.18);
+
+      --text: #ecfdf5;
+      --muted: rgba(236, 253, 245, 0.65);
+
+      --green: #22c55e;
+      --error: #ef4444;
+
+      --yellow: #fbbf24;
+      --blue: #60a5fa;
+      --orange: #fb923c;
+      --gray: #9ca3af;
+    }
 
     body {
-      background: var(--bg);
+      background: radial-gradient(1200px 700px at 15% 10%, rgba(34, 197, 94, 0.20), transparent 55%),
+                  radial-gradient(900px 600px at 90% 90%, rgba(134, 239, 172, 0.14), transparent 60%),
+                  linear-gradient(135deg, var(--bg0), var(--bg1));
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
     }
 
-    /* ── Navbar ── */
-    nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 32px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      position: sticky; top:0; z-index:100;
-    }
-    .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
-    }
-    .nav-logo span { color: var(--green); }
-    .nav-logo .icon {
-      width:34px; height:34px; background:var(--green);
-      border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px;
-    }
-    .nav-right { display:flex; align-items:center; gap:16px; }
-    .user-badge {
-      background:var(--surface2); border:1px solid var(--border);
-      border-radius:20px; padding:6px 14px; font-size:13px; color:var(--muted);
-    }
-    .user-badge strong { color:var(--text); }
-    .logout-btn {
-      background:transparent; border:1px solid var(--border);
-      color:var(--muted); padding:7px 16px; border-radius:8px;
-      font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; transition:all 0.2s;
-    }
-    .logout-btn:hover { border-color:var(--error); color:var(--error); }
-
-    /* ── Layout ── */
-    .main {
-      max-width: 1300px; margin: 0 auto;
-      padding: 32px 24px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    /* ── Card ── */
-    .card {
-      background: var(--surface);
+    .glass {
+      background: linear-gradient(180deg, var(--card), var(--card2));
       border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px;
-      animation: fadeUp 0.4s ease both;
+      box-shadow:
+        0 18px 50px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(14px);
     }
-    .card-title {
-      font-family:'Syne',sans-serif; font-weight:700; font-size:16px;
-      margin-bottom:20px; display:flex; align-items:center; gap:8px;
-    }
-    .card-title .dot { width:8px; height:8px; border-radius:50%; background:var(--green); }
 
-    /* ── Stats Row ── */
-    .stats-row {
-      grid-column: 1 / -1;
-      display: grid; grid-template-columns: repeat(4,1fr); gap:16px;
+    .bg-blob {
+      position: fixed;
+      border-radius: 9999px;
+      filter: blur(70px);
+      opacity: 0.20;
+      pointer-events: none;
+      animation: floaty 12s ease-in-out infinite;
     }
-    .stat-card {
-      background:var(--surface); border:1px solid var(--border);
-      border-radius:16px; padding:22px; text-align:center;
-      animation: fadeUp 0.4s ease both;
-    }
-    .stat-num {
-      font-family:'Syne',sans-serif; font-weight:800; font-size:32px;
-      color:var(--green); margin-bottom:4px;
-    }
-    .stat-label { font-size:13px; color:var(--muted); }
+    .b1 { width: 560px; height: 560px; left: -220px; top: -260px; background: rgba(34,197,94,0.70); }
+    .b2 { width: 440px; height: 440px; right: -210px; bottom: -250px; background: rgba(134,239,172,0.55); animation-delay: 2s; }
 
-    /* ── Upload Card ── */
-    .upload-card { grid-column: 1/2; }
-    .drop-zone {
-      border:2px dashed var(--border); border-radius:12px;
-      padding:36px 20px; text-align:center; cursor:pointer;
-      transition:all 0.2s; position:relative;
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+      50%      { transform: translateY(-24px) translateX(14px) scale(1.05); }
     }
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color:var(--green); background:rgba(74,222,128,0.04);
-    }
-    .drop-zone input[type="file"] {
-      position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
-    }
-    .drop-icon { font-size:36px; margin-bottom:10px; }
-    .drop-text { font-size:14px; color:var(--muted); }
-    .drop-text strong { color:var(--green); }
-    #previewImg {
-      width:100%; border-radius:10px; margin-top:16px; display:none;
-      max-height:180px; object-fit:cover; border:1px solid var(--border);
-    }
-    .predict-btn {
-      width:100%; margin-top:16px; padding:13px;
-      background:var(--green); color:#0a0f0a; border:none; border-radius:10px;
-      font-family:'Syne',sans-serif; font-weight:700; font-size:15px;
-      cursor:pointer; transition:all 0.2s; display:none;
-    }
-    .predict-btn:hover { transform:translateY(-1px); box-shadow:0 8px 25px rgba(74,222,128,0.3); }
-    .predict-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
-    /* ── Result Card ── */
-    .result-card { grid-column: 2/3; }
-    .result-empty {
-      display:flex; flex-direction:column; align-items:center;
-      justify-content:center; height:200px; color:var(--muted); font-size:14px; gap:10px;
-    }
-    .result-empty .big { font-size:40px; }
-    .result-box { display:none; }
-    .result-label {
-      font-family:'Syne',sans-serif; font-weight:800; font-size:36px; margin-bottom:4px;
-    }
-    .result-conf { font-size:14px; color:var(--muted); margin-bottom:16px; }
-    .bin-badge {
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 20px; border-radius:30px; font-weight:600;
-      font-size:15px; margin-bottom:16px; border:2px solid;
-    }
-    .result-bar-wrap {
-      background:var(--surface2); border-radius:8px; height:8px; overflow:hidden; margin-bottom:6px;
-    }
-    .result-bar-fill { height:100%; border-radius:8px; background:var(--green); transition:width 1s ease; }
-    .result-bar-label { font-size:12px; color:var(--muted); }
-
-    /* ── Gauge Card ── */
-    .gauge-card { grid-column: 1/2; }
-    .gauge-wrap {
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      padding:10px 0;
-    }
-    .gauge-svg { width:220px; height:130px; }
-    .gauge-num {
-      font-family:'Syne',sans-serif; font-weight:800; font-size:42px;
-      color:var(--green); text-align:center; margin-top:-10px;
-    }
-    .gauge-sublabel { font-size:13px; color:var(--muted); text-align:center; margin-top:4px; }
-    .gauge-legend {
-      display:flex; justify-content:center; gap:24px; margin-top:16px; flex-wrap:wrap;
-    }
-    .gauge-legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
-    .gauge-legend-dot { width:10px; height:10px; border-radius:50%; }
-
-    /* ── Charts ── */
-    .chart-card { grid-column: 2/3; }
-    .line-card   { grid-column: 1/2; }
-    .bar-card    { grid-column: 2/3; }
-
-    .chart-wrap { position:relative; height:220px; }
-
-    /* ── History Table ── */
-    .history-card { grid-column: 1/-1; }
-    table { width:100%; border-collapse:collapse; font-size:13px; }
-    th {
-      text-align:left; padding:10px 12px; color:var(--muted);
-      font-weight:500; border-bottom:1px solid var(--border);
-      text-transform:uppercase; letter-spacing:0.4px; font-size:11px;
-    }
-    td { padding:12px; border-bottom:1px solid var(--border); color:var(--text); }
-    tr:last-child td { border-bottom:none; }
-    tr:hover td { background:var(--surface2); }
-    .badge {
-      display:inline-block; padding:3px 10px;
-      border-radius:20px; font-size:12px; font-weight:600;
-    }
-    .empty-table { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
-
-    /* ── Toast ── */
-    .toast {
-      position:fixed; bottom:24px; right:24px;
-      padding:14px 20px; border-radius:10px; font-size:14px;
-      font-weight:500; display:none; z-index:999;
-    }
-    .toast.error   { background:rgba(248,113,113,0.15); border:1px solid var(--error); color:var(--error); }
-    .toast.success { background:rgba(74,222,128,0.15);  border:1px solid var(--green); color:var(--green); }
-    .toast.show    { display:block; animation:slideInRight 0.3s ease; }
-
-    @keyframes slideInRight {
-      from { opacity:0; transform:translateX(20px); }
-      to   { opacity:1; transform:translateX(0); }
-    }
+    .fade-up { animation: fadeUp 520ms cubic-bezier(.2,.8,.2,1) both; }
     @keyframes fadeUp {
-      from { opacity:0; transform:translateY(16px); }
-      to   { opacity:1; transform:translateY(0); }
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Drag state for dropzone (JS adds .dragover) */
+    #dropZone.dragover {
+      border-color: rgba(52, 211, 153, 0.7);
+      background: rgba(16, 185, 129, 0.08);
     }
 
     .spinner {
-      display:inline-block; width:16px; height:16px;
-      border:2px solid rgba(0,0,0,0.3); border-top-color:#000;
-      border-radius:50%; animation:spin 0.6s linear infinite;
-      vertical-align:middle; margin-right:6px;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0,0,0,0.25);
+      border-top-color: rgba(0,0,0,0.85);
+      border-radius: 9999px;
+      animation: spin 650ms linear infinite;
+      vertical-align: -3px;
+      margin-right: 8px;
     }
-    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+    }
+    .toast.error {
+      display: none;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fecaca;
+    }
+    .toast.success {
+      display: none;
+      background: rgba(34, 197, 94, 0.14);
+      border: 1px solid rgba(34, 197, 94, 0.30);
+      color: #bbf7d0;
+    }
+    .toast.show { display: block; animation: toastIn 240ms ease both; }
+    @keyframes toastIn { from { opacity:0; transform: translateY(10px);} to { opacity:1; transform: translateY(0);} }
+
+    /* Table scroll on small screens */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th {
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(236,253,245,0.55);
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(134,239,172,0.14);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(134,239,172,0.10);
+      color: rgba(236,253,245,0.92);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    tr:hover td { background: rgba(2, 6, 23, 0.20); }
+    .empty-table { text-align: center; padding: 34px 14px; color: rgba(236,253,245,0.60); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid;
+    }
   </style>
 </head>
-<body>
 
-<!-- Navbar -->
-<nav>
-  <div class="nav-logo">
-    <div class="icon">♻️</div>
-    Waste<span>AI</span>
-  </div>
-  <div class="nav-right">
-    <div class="user-badge">Logged in as <strong id="navUsername">...</strong></div>
-    <button class="logout-btn" onclick="handleLogout()">Logout</button>
-  </div>
-</nav>
+<body class="min-h-screen overflow-x-hidden">
+  <div class="bg-blob b1"></div>
+  <div class="bg-blob b2"></div>
 
-<div class="main">
+  <div class="relative flex min-h-screen">
+    <!-- Sidebar (mobile overlay + desktop fixed) -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 hidden lg:hidden z-40" onclick="toggleSidebar(false)"></div>
 
-  <!-- ── Stats Row ── -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-num" id="statTotal">0</div>
-      <div class="stat-label">Total Scans</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="statRecycle">0%</div>
-      <div class="stat-label">Recycling Rate</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="statTop">—</div>
-      <div class="stat-label">Most Common</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="statOrganic">0</div>
-      <div class="stat-label">Organic Waste</div>
-    </div>
-  </div>
-
-  <!-- ── Upload Card ── -->
-  <div class="card upload-card">
-    <div class="card-title"><div class="dot"></div> Scan Waste</div>
-    <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)"/>
-      <div class="drop-icon">📷</div>
-      <div class="drop-text"><strong>Click to upload</strong> or drag & drop</div>
-      <div class="drop-text">JPG, PNG, WEBP supported</div>
-    </div>
-    <img id="previewImg" src="" alt="Preview"/>
-    <button class="predict-btn" id="predictBtn" onclick="handlePredict()">
-      🔍 Classify Waste
-    </button>
-  </div>
-
-  <!-- ── Result Card ── -->
-  <div class="card result-card">
-    <div class="card-title"><div class="dot"></div> Prediction Result</div>
-    <div class="result-empty" id="resultEmpty">
-      <div class="big">🗑️</div>
-      <div>Upload an image to see the prediction</div>
-    </div>
-    <div class="result-box" id="resultBox">
-      <div class="result-label" id="resultLabel">—</div>
-      <div class="result-conf"  id="resultConf">—</div>
-      <div class="bin-badge"    id="binBadge">—</div>
-      <div class="result-bar-wrap">
-        <div class="result-bar-fill" id="resultBar" style="width:0%"></div>
-      </div>
-      <div class="result-bar-label" id="resultBarLabel"></div>
-    </div>
-  </div>
-
-  <!-- ── Recycling Rate Gauge ── -->
-  <div class="card gauge-card">
-    <div class="card-title"><div class="dot"></div> Recycling Rate Gauge</div>
-    <div class="gauge-wrap">
-      <svg class="gauge-svg" viewBox="0 0 220 130">
-        <!-- Background arc -->
-        <path d="M 20 110 A 90 90 0 0 1 200 110"
-              fill="none" stroke="#1e2e1e" stroke-width="18" stroke-linecap="round"/>
-        <!-- Foreground arc (animated) -->
-        <path id="gaugeFill" d="M 20 110 A 90 90 0 0 1 200 110"
-              fill="none" stroke="#4ade80" stroke-width="18" stroke-linecap="round"
-              stroke-dasharray="283" stroke-dashoffset="283"
-              style="transition: stroke-dashoffset 1.5s ease;"/>
-        <!-- Zone labels -->
-        <text x="18"  y="128" fill="#6b7c6b" font-size="10">0%</text>
-        <text x="100" y="22"  fill="#6b7c6b" font-size="10" text-anchor="middle">50%</text>
-        <text x="192" y="128" fill="#6b7c6b" font-size="10">100%</text>
-      </svg>
-      <div class="gauge-num"     id="gaugeNum">0%</div>
-      <div class="gauge-sublabel">of waste is recyclable</div>
-      <div class="gauge-legend">
-        <div class="gauge-legend-item">
-          <div class="gauge-legend-dot" style="background:#4ade80"></div> Recyclable
+    <aside id="sidebar" class="fixed lg:static z-50 lg:z-auto inset-y-0 left-0 w-72 -translate-x-full lg:translate-x-0 transition-transform duration-300">
+      <div class="h-full glass">
+        <div class="p-5 border-b border-emerald-200/10">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-emerald-400/20 border border-emerald-300/20 grid place-items-center">
+              <span class="text-lg">♻️</span>
+            </div>
+            <div>
+              <div class="font-display text-lg leading-tight tracking-tight">Waste<span class="text-emerald-300">AI</span></div>
+              <div class="text-xs text-emerald-50/55">Sustainability Monitoring</div>
+            </div>
+          </div>
         </div>
-        <div class="gauge-legend-item">
-          <div class="gauge-legend-dot" style="background:#1e2e1e"></div> Organic
-        </div>
+
+        <nav class="p-4">
+          <div class="text-xs font-semibold tracking-wide text-emerald-50/45 uppercase px-3">Navigation</div>
+          <div class="mt-3 space-y-1">
+            <a href="#overview" class="block rounded-xl px-3 py-2 text-sm text-emerald-50/80 hover:bg-white/5">Overview</a>
+            <a href="#scan" class="block rounded-xl px-3 py-2 text-sm text-emerald-50/80 hover:bg-white/5">Scan Waste</a>
+            <a href="#analytics" class="block rounded-xl px-3 py-2 text-sm text-emerald-50/80 hover:bg-white/5">Analytics</a>
+            <a href="#history" class="block rounded-xl px-3 py-2 text-sm text-emerald-50/80 hover:bg-white/5">History</a>
+          </div>
+
+          <div class="mt-6 rounded-2xl border border-emerald-200/10 bg-black/10 p-4">
+            <div class="text-xs text-emerald-50/55">Logged in as</div>
+            <div class="mt-1 font-display text-lg text-emerald-50" id="navUsername">...</div>
+            <button class="mt-4 w-full rounded-xl border border-emerald-200/10 bg-white/5 px-3 py-2 text-sm text-emerald-50/80 hover:bg-white/10" onclick="handleLogout()">Logout</button>
+          </div>
+        </nav>
       </div>
+    </aside>
+
+    <!-- Main column -->
+    <div class="flex-1 lg:pl-72">
+      <!-- Topbar -->
+      <header class="sticky top-0 z-30">
+        <div class="glass">
+          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <button class="lg:hidden rounded-xl border border-emerald-200/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10" onclick="toggleSidebar(true)" aria-label="Open sidebar">
+                ☰
+              </button>
+              <div>
+                <div class="font-display text-xl tracking-tight">Dashboard</div>
+                <div class="text-xs text-emerald-50/55">Monitor scans, categories, and recycling rate</div>
+              </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-3">
+              <div class="rounded-full border border-emerald-200/10 bg-black/10 px-3 py-1 text-xs text-emerald-50/60">
+                Session active
+              </div>
+              <button class="rounded-xl border border-emerald-200/10 bg-white/5 px-3 py-2 text-sm text-emerald-50/80 hover:bg-white/10" onclick="handleLogout()">Logout</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <!-- Stats -->
+        <section id="overview" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass fade-up rounded-2xl p-5">
+            <div class="text-xs text-emerald-50/55">Total Scans</div>
+            <div class="mt-2 font-display text-3xl tracking-tight text-emerald-200" id="statTotal">0</div>
+          </div>
+          <div class="glass fade-up rounded-2xl p-5" style="animation-delay: 40ms;">
+            <div class="text-xs text-emerald-50/55">Recycling Rate</div>
+            <div class="mt-2 font-display text-3xl tracking-tight text-emerald-200" id="statRecycle">0%</div>
+          </div>
+          <div class="glass fade-up rounded-2xl p-5" style="animation-delay: 80ms;">
+            <div class="text-xs text-emerald-50/55">Most Common</div>
+            <div class="mt-2 font-display text-3xl tracking-tight" id="statTop">—</div>
+          </div>
+          <div class="glass fade-up rounded-2xl p-5" style="animation-delay: 120ms;">
+            <div class="text-xs text-emerald-50/55">Organic Waste</div>
+            <div class="mt-2 font-display text-3xl tracking-tight" id="statOrganic">0</div>
+          </div>
+        </section>
+
+        <!-- Scan + Result -->
+        <section id="scan" class="grid gap-6 lg:grid-cols-5">
+          <div class="glass fade-up rounded-2xl p-6 lg:col-span-2">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="font-display text-lg tracking-tight">Scan Waste</div>
+                <div class="text-xs text-emerald-50/55">Upload an image to classify</div>
+              </div>
+              <div class="text-xs text-emerald-50/55">JPG/PNG/WEBP</div>
+            </div>
+
+            <div class="mt-5 rounded-2xl border border-emerald-200/10 bg-black/10 p-5">
+              <div id="dropZone" class="relative rounded-2xl border-2 border-dashed border-emerald-200/15 bg-black/10 px-5 py-10 text-center transition">
+                <input type="file" id="fileInput" name="image" accept="image/*" onchange="handleFileSelect(event)" class="absolute inset-0 opacity-0 cursor-pointer" />
+                <div class="text-3xl">📷</div>
+                <div class="mt-3 text-sm text-emerald-50/70">
+                  <span class="font-semibold text-emerald-100">Click to upload</span> or drag & drop
+                </div>
+                <div class="mt-1 text-xs text-emerald-50/50">High contrast images work best</div>
+              </div>
+
+              <img id="previewImg" src="" alt="Preview" style="display:none" class="mt-4 w-full rounded-2xl border border-emerald-200/10 object-cover max-h-52"/>
+              <button id="predictBtn" onclick="handlePredict()" style="display:none" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-emerald-300 text-slate-950 font-display font-extrabold tracking-tight py-3.5 transition hover:brightness-110 active:translate-y-[1px] disabled:opacity-60 disabled:cursor-not-allowed">
+                🔍 Classify Waste
+              </button>
+            </div>
+          </div>
+
+          <div class="glass fade-up rounded-2xl p-6 lg:col-span-3" style="animation-delay: 60ms;">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="font-display text-lg tracking-tight">Prediction Result</div>
+                <div class="text-xs text-emerald-50/55">Label, confidence, and bin assignment</div>
+              </div>
+            </div>
+
+            <div id="resultEmpty" class="mt-8 grid place-items-center text-center text-emerald-50/60">
+              <div class="text-5xl">🗑️</div>
+              <div class="mt-3 text-sm">Upload an image to see the prediction</div>
+            </div>
+
+            <div id="resultBox" style="display:none" class="mt-6">
+              <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  <div id="resultLabel" class="font-display text-4xl tracking-tight">—</div>
+                  <div id="resultConf" class="mt-1 text-sm text-emerald-50/65">—</div>
+                </div>
+                <div id="binBadge" class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold">—</div>
+              </div>
+
+              <div class="mt-6 rounded-2xl border border-emerald-200/10 bg-black/10 p-4">
+                <div class="flex items-center justify-between text-xs text-emerald-50/55">
+                  <span>Confidence</span>
+                  <span id="resultBarLabel"></span>
+                </div>
+                <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div id="resultBar" style="width:0%" class="h-full rounded-full bg-emerald-300 transition-all duration-700"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Gauge + Donut -->
+        <section id="analytics" class="grid gap-6 lg:grid-cols-5">
+          <div class="glass fade-up rounded-2xl p-6 lg:col-span-2">
+            <div class="font-display text-lg tracking-tight">Recycling Rate</div>
+            <div class="text-xs text-emerald-50/55">Gauge view of recyclable share</div>
+
+            <div class="mt-6 flex flex-col items-center">
+              <svg class="w-[220px] h-[130px]" viewBox="0 0 220 130">
+                <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="rgba(134,239,172,0.12)" stroke-width="18" stroke-linecap="round"/>
+                <path id="gaugeFill" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#22c55e" stroke-width="18" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" style="transition: stroke-dashoffset 1.5s ease, stroke 400ms ease;"/>
+                <text x="18"  y="128" fill="rgba(236,253,245,0.45)" font-size="10">0%</text>
+                <text x="100" y="22"  fill="rgba(236,253,245,0.45)" font-size="10" text-anchor="middle">50%</text>
+                <text x="192" y="128" fill="rgba(236,253,245,0.45)" font-size="10">100%</text>
+              </svg>
+              <div id="gaugeNum" class="-mt-2 font-display text-4xl tracking-tight text-emerald-200">0%</div>
+              <div class="mt-1 text-xs text-emerald-50/55">of waste is recyclable</div>
+
+              <div class="mt-5 flex flex-wrap justify-center gap-3 text-xs text-emerald-50/55">
+                <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full" style="background: var(--green)"></span> Recyclable</span>
+                <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full" style="background: rgba(134,239,172,0.15)"></span> Organic</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass fade-up rounded-2xl p-6 lg:col-span-3" style="animation-delay: 80ms;">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-display text-lg tracking-tight">Category Breakdown</div>
+                <div class="text-xs text-emerald-50/55">Distribution across waste types</div>
+              </div>
+            </div>
+            <div class="mt-4" style="height: 260px; position: relative;">
+              <canvas id="donutChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Line + Bar -->
+        <section class="grid gap-6 lg:grid-cols-2">
+          <div class="glass fade-up rounded-2xl p-6">
+            <div class="font-display text-lg tracking-tight">Scans Over Time</div>
+            <div class="text-xs text-emerald-50/55">Last 7 entries (by day)</div>
+            <div class="mt-4" style="height: 260px; position: relative;">
+              <canvas id="lineChart"></canvas>
+            </div>
+          </div>
+
+          <div class="glass fade-up rounded-2xl p-6" style="animation-delay: 80ms;">
+            <div class="font-display text-lg tracking-tight">Category Comparison</div>
+            <div class="text-xs text-emerald-50/55">Counts by label</div>
+            <div class="mt-4" style="height: 260px; position: relative;">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- History -->
+        <section id="history" class="glass fade-up rounded-2xl p-6">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="font-display text-lg tracking-tight">Recent Predictions</div>
+              <div class="text-xs text-emerald-50/55">Latest scans for this account</div>
+            </div>
+          </div>
+
+          <div class="mt-5 table-wrap rounded-2xl border border-emerald-200/10 bg-black/10">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Category</th>
+                  <th>Bin Assigned</th>
+                  <th>Confidence</th>
+                  <th>Date & Time</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody">
+                <tr><td colspan="5" class="empty-table">No predictions yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
     </div>
   </div>
 
-  <!-- ── Doughnut Chart ── -->
-  <div class="card chart-card">
-    <div class="card-title"><div class="dot"></div> Waste Category Breakdown</div>
-    <div class="chart-wrap">
-      <canvas id="donutChart"></canvas>
-    </div>
-  </div>
+  <div class="toast" id="toast"></div>
 
-  <!-- ── Line Chart ── -->
-  <div class="card line-card">
-    <div class="card-title"><div class="dot"></div> Waste Scanned Over Time</div>
-    <div class="chart-wrap">
-      <canvas id="lineChart"></canvas>
-    </div>
-  </div>
-
-  <!-- ── Bar Chart ── -->
-  <div class="card bar-card">
-    <div class="card-title"><div class="dot"></div> Category Comparison</div>
-    <div class="chart-wrap">
-      <canvas id="barChart"></canvas>
-    </div>
-  </div>
-
-  <!-- ── History Table ── -->
-  <div class="card history-card">
-    <div class="card-title"><div class="dot"></div> Recent Predictions</div>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Category</th>
-          <th>Bin Assigned</th>
-          <th>Confidence</th>
-          <th>Date & Time</th>
-        </tr>
-      </thead>
-      <tbody id="historyBody">
-        <tr><td colspan="5" class="empty-table">No predictions yet</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script>
-  // ── Color map ──
-  const COLORS = {
-    Plastic: { bg:'#FFD700', text:'#000', label:'🟡 Yellow Bin' },
-    Paper:   { bg:'#60a5fa', text:'#000', label:'🔵 Blue Bin'   },
-    Organic: { bg:'#4ade80', text:'#000', label:'🟢 Green Bin'  },
-    Metal:   { bg:'#9ca3af', text:'#000', label:'⚫ Grey Bin'   },
-  };
-
-  let selectedFile = null;
-  let donutChart   = null;
-  let lineChart    = null;
-  let barChart     = null;
-
-  // ── On page load ──
-  window.addEventListener('load', async () => {
-    await fetchUser();
-    await fetchStats();
-    await fetchLineChart();
-    await fetchBarChart();
-    await fetchHistory();
-  });
-
-  // ── Drag & Drop ──
-  const dropZone = document.getElementById('dropZone');
-  dropZone.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-  dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault(); dropZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file) loadPreview(file);
-  });
-
-  function handleFileSelect(e) {
-    const file = e.target.files[0];
-    if (file) loadPreview(file);
-  }
-
-  function loadPreview(file) {
-    selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.getElementById('previewImg');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('predictBtn').style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ── Predict ──
-  async function handlePredict() {
-    if (!selectedFile) return;
-    const btn = document.getElementById('predictBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Classifying...';
-
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-
-    try {
-      const res  = await fetch('/api/predict', { method:'POST', body:formData });
-      const data = await res.json();
-
-      if (res.ok) {
-        showResult(data);
-        await fetchStats();
-        await fetchLineChart();
-        await fetchBarChart();
-        await fetchHistory();
-        showToast('Waste classified successfully!', 'success');
+  <script>
+    // Mobile sidebar
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (!sidebar || !overlay) return;
+      if (open) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
       } else {
-        showToast(data.error || 'Prediction failed.', 'error');
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
       }
-    } catch {
-      showToast('Cannot connect to server.', 'error');
     }
 
-    btn.disabled = false;
-    btn.innerHTML = '🔍 Classify Waste';
-  }
+    // Backend uses lowercase labels: metal/organic/paper/plastic
+    const LABELS = {
+      plastic: { bg: '#FFD700', label: '🟡 Yellow Bin' },
+      paper:   { bg: '#60a5fa', label: '🔵 Blue Bin' },
+      organic: { bg: '#22c55e', label: '🟢 Green Bin' },
+      metal:   { bg: '#9ca3af', label: '⚫ Grey Bin' },
+    };
 
-  // ── Show Result ──
-  function showResult(data) {
-    document.getElementById('resultEmpty').style.display = 'none';
-    const box   = document.getElementById('resultBox');
-    box.style.display = 'block';
-    const color = COLORS[data.label] || { bg:'#4ade80', text:'#000', label: data.bin };
+    function toTitleCase(s) {
+      if (!s) return s;
+      return String(s).charAt(0).toUpperCase() + String(s).slice(1);
+    }
 
-    document.getElementById('resultLabel').textContent = data.label;
-    document.getElementById('resultLabel').style.color = color.bg;
-    document.getElementById('resultConf').textContent  = `Model confidence: ${data.confidence}%`;
+    let selectedFile = null;
+    let donutChart   = null;
+    let lineChart    = null;
+    let barChart     = null;
 
-    const badge = document.getElementById('binBadge');
-    badge.textContent      = color.label;
-    badge.style.color      = color.bg;
-    badge.style.borderColor= color.bg;
-    badge.style.background = color.bg + '18';
-
-    setTimeout(() => {
-      document.getElementById('resultBar').style.width      = data.confidence + '%';
-      document.getElementById('resultBar').style.background = color.bg;
-    }, 100);
-    document.getElementById('resultBarLabel').textContent = `${data.confidence}% confident`;
-  }
-
-  // ── Fetch Stats + update gauge + donut ──
-  async function fetchStats() {
-    try {
-      const res  = await fetch('/api/predictions/stats');
-      const data = await res.json();
-
-      document.getElementById('statTotal').textContent   = data.total;
-      document.getElementById('statRecycle').textContent = data.recycling_rate + '%';
-      document.getElementById('statOrganic').textContent = data.category_counts['Organic'] || 0;
-
-      const counts = data.category_counts;
-      const top    = Object.keys(counts).sort((a,b) => counts[b]-counts[a])[0];
-      document.getElementById('statTop').textContent = top || '—';
-
-      updateGauge(data.recycling_rate);
-      updateDonut(data.category_counts);
-    } catch(e) { console.error(e); }
-  }
-
-  // ── Gauge ──
-  function updateGauge(rate) {
-    const totalArcLength = 283;
-    const offset = totalArcLength - (rate / 100) * totalArcLength;
-    document.getElementById('gaugeFill').style.strokeDashoffset = offset;
-
-    // Color changes based on rate
-    let color = '#f87171';              // red   0-40%
-    if (rate >= 70) color = '#4ade80';  // green 70-100%
-    else if (rate >= 40) color = '#fbbf24'; // yellow 40-70%
-    document.getElementById('gaugeFill').style.stroke = color;
-    document.getElementById('gaugeNum').style.color   = color;
-    document.getElementById('gaugeNum').textContent   = rate + '%';
-  }
-
-  // ── Donut Chart ──
-  function updateDonut(counts) {
-    const labels = Object.keys(counts);
-    const values = Object.values(counts);
-    const colors = labels.map(l => (COLORS[l] || {}).bg || '#4ade80');
-
-    if (donutChart) donutChart.destroy();
-    const ctx = document.getElementById('donutChart').getContext('2d');
-    donutChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{ data:values, backgroundColor:colors, borderColor:'#111911', borderWidth:3, hoverOffset:8 }]
-      },
-      options: {
-        responsive:true, maintainAspectRatio:false,
-        plugins: {
-          legend: { position:'bottom', labels:{ color:'#6b7c6b', font:{ family:'DM Sans', size:12 }, padding:16 }},
-          tooltip: { callbacks: { label:(ctx) => ` ${ctx.label}: ${ctx.raw} scans` }}
-        },
-        cutout:'65%',
-      }
+    window.addEventListener('load', async () => {
+      await fetchUser();
+      await fetchStats();
+      await fetchLineChart();
+      await fetchBarChart();
+      await fetchHistory();
     });
-  }
 
-  // ── Line Chart ──
-  async function fetchLineChart() {
-    try {
-      const res  = await fetch('/api/predictions/linechart');
-      const data = await res.json();
+    // Drag & Drop
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) loadPreview(file);
+    });
 
-      if (lineChart) lineChart.destroy();
-      const ctx = document.getElementById('lineChart').getContext('2d');
-      lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.labels.length ? data.labels : ['No data'],
-          datasets: [{
-            label: 'Scans per Day',
-            data: data.values.length ? data.values : [0],
-            borderColor: '#4ade80',
-            backgroundColor: 'rgba(74,222,128,0.1)',
-            borderWidth: 2,
-            pointBackgroundColor: '#4ade80',
-            pointRadius: 5,
-            tension: 0.4,
-            fill: true,
-          }]
-        },
-        options: {
-          responsive:true, maintainAspectRatio:false,
-          plugins: { legend:{ display:false } },
-          scales: {
-            x: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }}, grid:{ color:'#1e2e1e' }},
-            y: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }, stepSize:1 }, grid:{ color:'#1e2e1e' }, beginAtZero:true }
-          }
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) loadPreview(file);
+    }
+
+    function loadPreview(file) {
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById('previewImg');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('predictBtn').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Predict
+    async function handlePredict() {
+      if (!selectedFile) return;
+      const btn = document.getElementById('predictBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Classifying...';
+
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+
+      try {
+        const res  = await fetch('/api/predict', { method:'POST', body:formData });
+        const data = await res.json();
+
+        if (res.ok) {
+          showResult(data);
+          await fetchStats();
+          await fetchLineChart();
+          await fetchBarChart();
+          await fetchHistory();
+          showToast('Waste classified successfully!', 'success');
+        } else {
+          showToast(data.error || 'Prediction failed.', 'error');
         }
-      });
-    } catch(e) { console.error(e); }
-  }
-
-  // ── Bar Chart ──
-  async function fetchBarChart() {
-    try {
-      const res  = await fetch('/api/predictions/barchart');
-      const data = await res.json();
-      const colors = data.labels.map(l => (COLORS[l] || {}).bg || '#4ade80');
-
-      if (barChart) barChart.destroy();
-      const ctx = document.getElementById('barChart').getContext('2d');
-      barChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: data.labels.length ? data.labels : ['No data'],
-          datasets: [{
-            label: 'Count',
-            data: data.values.length ? data.values : [0],
-            backgroundColor: data.labels.length ? colors.map(c => c + 'cc') : ['#1e2e1e'],
-            borderColor: data.labels.length ? colors : ['#1e2e1e'],
-            borderWidth: 2,
-            borderRadius: 8,
-          }]
-        },
-        options: {
-          responsive:true, maintainAspectRatio:false,
-          plugins: { legend:{ display:false } },
-          scales: {
-            x: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }}, grid:{ color:'#1e2e1e' }},
-            y: { ticks:{ color:'#6b7c6b', font:{ family:'DM Sans' }, stepSize:1 }, grid:{ color:'#1e2e1e' }, beginAtZero:true }
-          }
-        }
-      });
-    } catch(e) { console.error(e); }
-  }
-
-  // ── History Table ──
-  async function fetchHistory() {
-    try {
-      const res  = await fetch('/api/predictions/history');
-      const data = await res.json();
-      const body = document.getElementById('historyBody');
-
-      if (!data.predictions || data.predictions.length === 0) {
-        body.innerHTML = `<tr><td colspan="5" class="empty-table">No predictions yet</td></tr>`;
-        return;
+      } catch {
+        showToast('Cannot connect to server.', 'error');
       }
 
-      body.innerHTML = data.predictions.slice(0,10).map((p,i) => {
-        const color = (COLORS[p.predicted_label] || {}).bg || '#4ade80';
-        return `
-          <tr>
-            <td style="color:var(--muted)">${i+1}</td>
-            <td>
-              <span class="badge" style="background:${color}22; color:${color}; border:1px solid ${color}44">
-                ${p.predicted_label}
-              </span>
-            </td>
-            <td style="color:var(--muted); font-size:12px">${p.bin_assigned}</td>
-            <td style="color:var(--green)">${p.confidence}%</td>
-            <td style="color:var(--muted); font-size:12px">${p.timestamp}</td>
-          </tr>`;
-      }).join('');
-    } catch(e) { console.error(e); }
-  }
+      btn.disabled = false;
+      btn.innerHTML = '🔍 Classify Waste';
+    }
 
-  // ── Fetch User ──
-  async function fetchUser() {
-    try {
-      const res  = await fetch('/api/auth/me');
-      const data = await res.json();
-      if (res.ok) document.getElementById('navUsername').textContent = data.user.username;
-      else window.location.href = '/api/auth/login';
-    } catch { window.location.href = '/api/auth/login'; }
-  }
+    // Show Result
+    function showResult(data) {
+      document.getElementById('resultEmpty').style.display = 'none';
+      const box = document.getElementById('resultBox');
+      box.style.display = 'block';
 
-  // ── Logout ──
-  async function handleLogout() {
-    window.location.href = '/api/auth/logout';
-  }
+      const key = String(data.label || '').toLowerCase();
+      const palette = LABELS[key] || { bg: data.bin_color || '#22c55e', label: data.bin || 'Assigned Bin' };
+      const labelText = toTitleCase(key || data.label || 'Unknown');
 
-  // ── Toast ──
-  function showToast(msg, type='success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className   = `toast ${type} show`;
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-</script>
+      const resultLabel = document.getElementById('resultLabel');
+      resultLabel.textContent = labelText;
+      resultLabel.style.color = palette.bg;
 
+      document.getElementById('resultConf').textContent  = `Model confidence: ${data.confidence}%`;
+
+      const badge = document.getElementById('binBadge');
+      badge.textContent       = palette.label || data.bin || 'Assigned Bin';
+      badge.style.color       = palette.bg;
+      badge.style.borderColor = palette.bg;
+      badge.style.background  = palette.bg + '18';
+
+      setTimeout(() => {
+        document.getElementById('resultBar').style.width      = data.confidence + '%';
+        document.getElementById('resultBar').style.background = palette.bg;
+      }, 60);
+      document.getElementById('resultBarLabel').textContent = `${data.confidence}%`;
+    }
+
+    // Stats + Gauge + Donut
+    async function fetchStats() {
+      try {
+        const res  = await fetch('/api/predictions/stats');
+        const data = await res.json();
+
+        const counts = data.category_counts || {};
+        const organicCount = counts.organic || 0;
+        const topKey = Object.keys(counts).sort((a,b) => (counts[b] || 0) - (counts[a] || 0))[0];
+
+        document.getElementById('statTotal').textContent   = data.total ?? 0;
+        document.getElementById('statRecycle').textContent = (data.recyclable_rate ?? 0) + '%';
+        document.getElementById('statOrganic').textContent = organicCount;
+        document.getElementById('statTop').textContent     = topKey ? toTitleCase(topKey) : '—';
+
+        updateGauge(data.recyclable_rate ?? 0);
+        updateDonut(counts);
+      } catch(e) {
+        console.error(e);
+      }
+    }
+
+    function updateGauge(rate) {
+      const totalArcLength = 283;
+      const offset = totalArcLength - (rate / 100) * totalArcLength;
+      const fill = document.getElementById('gaugeFill');
+      fill.style.strokeDashoffset = offset;
+
+      let color = '#ef4444';
+      if (rate >= 70) color = '#22c55e';
+      else if (rate >= 40) color = '#fbbf24';
+
+      fill.style.stroke = color;
+      const num = document.getElementById('gaugeNum');
+      num.style.color = color;
+      num.textContent = rate + '%';
+    }
+
+    function updateDonut(counts) {
+      const labels = Object.keys(counts);
+      const values = Object.values(counts);
+      const colors = labels.map(l => (LABELS[String(l).toLowerCase()] || {}).bg || '#22c55e');
+
+      if (donutChart) donutChart.destroy();
+      const ctx = document.getElementById('donutChart').getContext('2d');
+      donutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels.map(toTitleCase),
+          datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderColor: 'rgba(15, 23, 42, 0.8)',
+            borderWidth: 3,
+            hoverOffset: 8,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: 'rgba(236,253,245,0.60)',
+                font: { family: 'DM Sans', size: 12 },
+                padding: 16,
+              },
+            },
+            tooltip: { callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.raw} scans` } },
+          },
+          cutout: '68%',
+        }
+      });
+    }
+
+    async function fetchLineChart() {
+      try {
+        const res  = await fetch('/api/predictions/linechart');
+        const data = await res.json();
+
+        if (lineChart) lineChart.destroy();
+        const ctx = document.getElementById('lineChart').getContext('2d');
+        lineChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: (data.labels && data.labels.length) ? data.labels : ['No data'],
+            datasets: [{
+              label: 'Scans per Day',
+              data: (data.values && data.values.length) ? data.values : [0],
+              borderColor: '#22c55e',
+              backgroundColor: 'rgba(34,197,94,0.12)',
+              borderWidth: 2,
+              pointBackgroundColor: '#22c55e',
+              pointRadius: 4,
+              tension: 0.4,
+              fill: true,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { ticks: { color: 'rgba(236,253,245,0.55)', font: { family: 'DM Sans' } }, grid: { color: 'rgba(134,239,172,0.10)' } },
+              y: { ticks: { color: 'rgba(236,253,245,0.55)', font: { family: 'DM Sans' }, stepSize: 1 }, grid: { color: 'rgba(134,239,172,0.10)' }, beginAtZero: true },
+            },
+          }
+        });
+      } catch(e) { console.error(e); }
+    }
+
+    async function fetchBarChart() {
+      try {
+        const res  = await fetch('/api/predictions/barchart');
+        const data = await res.json();
+        const labels = (data.labels || []).map(l => String(l).toLowerCase());
+        const colors = labels.map(l => (LABELS[l] || {}).bg || '#22c55e');
+
+        if (barChart) barChart.destroy();
+        const ctx = document.getElementById('barChart').getContext('2d');
+        barChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels.length ? labels.map(toTitleCase) : ['No data'],
+            datasets: [{
+              label: 'Count',
+              data: (data.values && data.values.length) ? data.values : [0],
+              backgroundColor: labels.length ? colors.map(c => c + 'cc') : ['rgba(134,239,172,0.15)'],
+              borderColor: labels.length ? colors : ['rgba(134,239,172,0.20)'],
+              borderWidth: 2,
+              borderRadius: 10,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { ticks: { color: 'rgba(236,253,245,0.55)', font: { family: 'DM Sans' } }, grid: { color: 'rgba(134,239,172,0.10)' } },
+              y: { ticks: { color: 'rgba(236,253,245,0.55)', font: { family: 'DM Sans' }, stepSize: 1 }, grid: { color: 'rgba(134,239,172,0.10)' }, beginAtZero: true },
+            },
+          }
+        });
+      } catch(e) { console.error(e); }
+    }
+
+    async function fetchHistory() {
+      try {
+        const res  = await fetch('/api/predictions/history');
+        const data = await res.json();
+        const body = document.getElementById('historyBody');
+
+        if (!data.predictions || data.predictions.length === 0) {
+          body.innerHTML = `<tr><td colspan="5" class="empty-table">No predictions yet</td></tr>`;
+          return;
+        }
+
+        body.innerHTML = data.predictions.slice(0, 10).map((p, i) => {
+          // Backend keys: prediction, confidence_interval, bin_assigned, timestamp
+          const labelKey = String(p.prediction || '').toLowerCase();
+          const palette = LABELS[labelKey] || { bg: '#22c55e' };
+          const confidence = (p.confidence_interval ?? 0);
+          return `
+            <tr>
+              <td style="color: rgba(236,253,245,0.55)">${i + 1}</td>
+              <td>
+                <span class="badge" style="background:${palette.bg}18; color:${palette.bg}; border-color:${palette.bg}44">
+                  ${toTitleCase(labelKey || 'Unknown')}
+                </span>
+              </td>
+              <td style="color: rgba(236,253,245,0.70); font-size: 12px">${p.bin_assigned || '—'}</td>
+              <td style="color: ${palette.bg}; font-weight: 700">${confidence}%</td>
+              <td style="color: rgba(236,253,245,0.60); font-size: 12px">${p.timestamp || '—'}</td>
+            </tr>`;
+        }).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    async function fetchUser() {
+      try {
+        const res  = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('navUsername').textContent = data.user.username;
+        } else {
+          window.location.href = '/api/auth/login';
+        }
+      } catch {
+        window.location.href = '/api/auth/login';
+      }
+    }
+
+    async function handleLogout() {
+      window.location.href = '/api/auth/logout';
+    }
+
+    function showToast(msg, type='success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className   = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
 </body>
 </html>
