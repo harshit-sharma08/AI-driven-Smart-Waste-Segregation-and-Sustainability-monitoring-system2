@@ -53,64 +53,27 @@ The system also includes user authentication features and is designed to control
 
 ---
 
-## 🏗️ System Architecture
-
-```
-[ Image Upload / ESP32 Camera ]
-              │
-              ▼
-   [ Flask Backend (app.py) ]
-         │           │
-         ▼           ▼
-  [ MobileNet     [ SQLite DB ]
-    .keras Model]  (users + predictions)
-         │
-         ▼
-  [ Prediction Result ]
-         │
-         ├──► [ Web Dashboard ] ── (Charts, History, Stats)
-         │
-         └──► [ ESP32 ] ── (Servo Motors → Physical Bins)
-                    │
-                    └──► [ Ultrasonic Sensor → Bin Fill Level ]
-```
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| AI Model | TensorFlow / Keras, MobileNetV2, NumPy, Pillow |
-| Backend | Flask, Flask-Login, Flask-SQLAlchemy, Flask-Bcrypt |
-| Frontend | HTML5, CSS3, JavaScript, Chart.js |
-| Database | SQLite |
-| Hardware | ESP32, Servo Motors, Ultrasonic Sensor, Camera Module |
-
----
-
-## 📁 Folder Structure
-
-```
-waste-segregation/
-│
-├── app.py                          # Main Flask backend
-├── requirements.txt                # Python dependencies
-├── .env                            # Secret keys (not on GitHub)
-├── .gitignore                      # Files excluded from GitHub
-│
-├── model/
-│   └── mobilenet_waste_classifier.keras   # Trained MobileNet model (not on GitHub)
-│
-├── templates/
-│   ├── login.html                  # Login page
-│   ├── register.html               # Register page
-│   └── dashboard.html              # Main dashboard
-│
-└── static/
-    └── uploads/                    # Saved prediction images
-```
-
+## 🏗️ System Architecture[ Image Upload / ESP32 Camera Module ]
+                 │
+                 ▼
+        [ Flask Application (app.py) ]
+             │              │
+             ▼              ▼
+ [ MobileNetV2 Model ]   [ SQLite Database ]
+   (.keras format)        (users & predictions)
+             │
+             ▼
+     [ Prediction Output ]
+             │
+     ├──────────────► [ Web Dashboard Interface ]
+     │                 (Charts, History, Analytics)
+     │
+     └──────────────► [ ESP32 Controller ]
+                         (Servo Motors → Smart Bins)
+                              │
+                              └──► [ Ultrasonic Sensor ]
+                                     (Real-time Bin Level Monitoring)
+                                     
 ---
 
 ## 🚀 Getting Started
