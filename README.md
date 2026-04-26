@@ -83,6 +83,31 @@ The system also includes user authentication features and is designed to control
 | Database | SQLite (Lightweight relational DB) |
 | Hardware | ESP32, Servo Motors, Ultrasonic Sensor, Camera Module |
 
+
+
+
+waste-segregation-system/
+│
+├── app.py                          # Core Flask application
+├── requirements.txt                # Project dependencies
+├── .env                            # Environment variables (excluded)
+├── .gitignore                      # Ignored files configuration
+│
+├── model/
+│   └── mobilenet_waste_classifier.keras   # Pre-trained CNN model (not committed)
+│
+├── templates/
+│   ├── login.html                  # User login interface
+│   ├── register.html               # User registration page
+│   └── dashboard.html              # Analytics dashboard
+│
+└── static/
+    └── uploads/                    # Stored input images for predictions
+
+
+
+    
+
 ## 🚀 Getting Started
 
 **1. Clone the repository**
