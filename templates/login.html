@@ -4,281 +4,230 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login — WasteAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui'],
+            display: ['Syne', 'ui-sans-serif', 'system-ui'],
+          },
+        },
+      },
+    };
+  </script>
+
   <style>
     :root {
-      :root {
-  --bg:        #050a05;   /* deeper dark background */
-  --surface:   #0f1f14;   /* rich dark green surface */
-  --border:    #1f3a2a;   /* smooth green border */
-
-  --green:     #22c55e;   /* vibrant primary green */
-  --green-dim: #14532d;   /* darker shade for buttons */
-
-  --accent:    #86efac;   /* light highlight green */
-
-  --text:      #ecfdf5;   /* soft white-green */
-  --muted:     #7c8f7c;   /* better readability */
-
-  --error:     #ef4444;   /* cleaner red */
-}
+      --bg0: #060a07;
+      --bg1: #06140b;
+      --card: rgba(17, 25, 40, 0.55);
+      --card2: rgba(15, 23, 42, 0.55);
+      --border: rgba(134, 239, 172, 0.18);
+      --text: #ecfdf5;
+      --muted: rgba(236, 253, 245, 0.68);
+      --green: #22c55e;
+      --error: #ef4444;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: var(--bg);
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(34, 197, 94, 0.20), transparent 55%),
+                  radial-gradient(900px 500px at 85% 80%, rgba(134, 239, 172, 0.14), transparent 60%),
+                  linear-gradient(135deg, var(--bg0), var(--bg1));
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
     }
 
-    /* Animated background blobs */
+    .glass {
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--border);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(14px);
+    }
+
     .bg-blob {
       position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.12;
-      animation: float 8s ease-in-out infinite;
+      border-radius: 9999px;
+      filter: blur(60px);
+      opacity: 0.20;
       pointer-events: none;
+      animation: floaty 10s ease-in-out infinite;
     }
-    .bg-blob.b1 { width: 400px; height: 400px; background: #4ade80; top: -100px; left: -100px; animation-delay: 0s; }
-    .bg-blob.b2 { width: 300px; height: 300px; background: #22c55e; bottom: -80px; right: -80px; animation-delay: 3s; }
-    .bg-blob.b3 { width: 200px; height: 200px; background: #86efac; top: 50%; left: 50%; animation-delay: 5s; }
+    .b1 { width: 520px; height: 520px; left: -180px; top: -220px; background: rgba(34,197,94,0.75); }
+    .b2 { width: 420px; height: 420px; right: -180px; bottom: -220px; background: rgba(134,239,172,0.55); animation-delay: 1.6s; }
+    .b3 { width: 240px; height: 240px; left: 55%; top: 45%; background: rgba(34,197,94,0.35); animation-delay: 3.1s; }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50%       { transform: translateY(-30px) scale(1.05); }
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 48px 40px;
-      width: 100%;
-      max-width: 420px;
-      position: relative;
-      z-index: 1;
-      animation: slideUp 0.5s ease forwards;
-      box-shadow: 0 0 60px rgba(74, 222, 128, 0.05);
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+      50%      { transform: translateY(-22px) translateX(10px) scale(1.05); }
     }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
+    .fade-up { animation: fadeUp 520ms cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 32px;
-    }
-
-    .logo-icon {
-      width: 40px; height: 40px;
-      background: var(--green);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-    }
-
-    .logo-text {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-
-    .logo-text span { color: var(--green); }
-
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 28px;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 32px;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 13px 16px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
-    }
-
-    input::placeholder { color: var(--muted); }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--green);
-      color: #0a0f0a;
-      border: none;
-      border-radius: 10px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-      letter-spacing: 0.3px;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);
-    }
-
-    .btn:active { transform: translateY(0); }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .divider {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      margin: 20px 0;
-      position: relative;
-    }
-
-    .divider::before, .divider::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      width: 38%;
-      height: 1px;
-      background: var(--border);
-    }
-    .divider::before { left: 0; }
-    .divider::after  { right: 0; }
-
-    .link-row {
-      text-align: center;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .link-row a {
-      color: var(--green);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .link-row a:hover { text-decoration: underline; }
-
-    /* Error / Success message */
     .message {
-      padding: 12px 16px;
-      border-radius: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
       font-size: 14px;
-      margin-bottom: 18px;
       display: none;
     }
-    .message.error   { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--error); }
-    .message.success { background: rgba(74,222,128,0.1);  border: 1px solid rgba(74,222,128,0.3);  color: var(--green); }
-    .message.show    { display: block; animation: fadeIn 0.3s ease; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .message.error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.28);
+      color: #fecaca;
     }
+    .message.success {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #bbf7d0;
+    }
+    .message.show { display: block; animation: msgIn 260ms ease both; }
+    @keyframes msgIn { from { opacity:0; transform: translateY(-6px);} to { opacity:1; transform: translateY(0);} }
 
-    /* Loading spinner inside button */
     .spinner {
       display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(0,0,0,0.3);
-      border-top-color: #000;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0,0,0,0.25);
+      border-top-color: rgba(0,0,0,0.85);
+      border-radius: 9999px;
+      animation: spin 650ms linear infinite;
+      vertical-align: -3px;
+      margin-right: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body>
 
+<body class="min-h-screen overflow-x-hidden">
   <div class="bg-blob b1"></div>
   <div class="bg-blob b2"></div>
   <div class="bg-blob b3"></div>
 
-  <div class="card">
+  <main class="relative min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="w-full max-w-5xl grid gap-8 lg:grid-cols-2 items-stretch">
+      <!-- Brand / Marketing panel -->
+      <section class="glass fade-up rounded-3xl p-7 sm:p-10 hidden lg:flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="h-11 w-11 rounded-2xl bg-emerald-400/20 border border-emerald-300/20 grid place-items-center">
+              <span class="text-xl">♻️</span>
+            </div>
+            <div class="font-display text-xl tracking-tight">
+              Waste<span class="text-emerald-300">AI</span>
+            </div>
+          </div>
 
-    <div class="logo">
-      <div class="logo-icon">♻️</div>
-      <div class="logo-text">Waste<span>AI</span></div>
+          <h1 class="mt-10 font-display text-4xl leading-tight tracking-tight">
+            Smart waste segregation,
+            <span class="text-emerald-200">clean dashboards</span>.
+          </h1>
+          <p class="mt-4 text-sm text-emerald-50/70 leading-relaxed max-w-md">
+            Upload a photo, get an instant classification, and track recycling metrics over time —
+            in a fast, modern monitoring dashboard.
+          </p>
+
+          <div class="mt-8 grid gap-3 text-sm text-emerald-50/75">
+            <div class="flex gap-3">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-300"></span>
+              <p><span class="text-emerald-50">Real-time</span> predictions with confidence.</p>
+            </div>
+            <div class="flex gap-3">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-300"></span>
+              <p><span class="text-emerald-50">Insights</span> via charts + scan history.</p>
+            </div>
+            <div class="flex gap-3">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-300"></span>
+              <p><span class="text-emerald-50">Secure</span> user sessions with Flask-Login.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 pt-6 border-t border-emerald-200/10 text-xs text-emerald-50/55">
+          Tip: Use a well-lit image for best accuracy.
+        </div>
+      </section>
+
+      <!-- Auth card -->
+      <section class="glass fade-up rounded-3xl p-7 sm:p-10">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <div class="font-display text-2xl tracking-tight">Welcome back</div>
+            <p class="mt-1 text-sm text-emerald-50/70">Sign in to your monitoring dashboard</p>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 rounded-full border border-emerald-200/10 bg-black/10 px-3 py-1 text-xs text-emerald-50/60">
+            <span class="h-2 w-2 rounded-full bg-emerald-300/80"></span>
+            Online
+          </div>
+        </div>
+
+        <!-- Error / Success messages (IDs preserved for JS) -->
+        <div class="mt-6 space-y-3">
+          <div class="message error" id="errorMsg"></div>
+          <div class="message success" id="successMsg"></div>
+        </div>
+
+        <!-- Fields (IDs preserved for JS; name attrs added but harmless) -->
+        <div class="mt-6 space-y-4">
+          <div>
+            <label for="username" class="block text-xs font-semibold tracking-wide text-emerald-50/60 uppercase">Username</label>
+            <div class="mt-2">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                placeholder="Enter your username"
+                class="w-full rounded-2xl bg-black/25 border border-emerald-200/10 px-4 py-3 text-emerald-50 placeholder:text-emerald-50/35 outline-none transition focus:border-emerald-300/40 focus:ring-4 focus:ring-emerald-400/10"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="password" class="block text-xs font-semibold tracking-wide text-emerald-50/60 uppercase">Password</label>
+            <div class="mt-2">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                class="w-full rounded-2xl bg-black/25 border border-emerald-200/10 px-4 py-3 text-emerald-50 placeholder:text-emerald-50/35 outline-none transition focus:border-emerald-300/40 focus:ring-4 focus:ring-emerald-400/10"
+              />
+            </div>
+          </div>
+
+          <button
+            class="w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-emerald-300 text-slate-950 font-display font-extrabold tracking-tight py-3.5 transition hover:brightness-110 active:translate-y-[1px] disabled:opacity-60 disabled:cursor-not-allowed"
+            id="loginBtn"
+            onclick="handleLogin()"
+          >
+            Sign In
+          </button>
+
+          <div class="relative py-2">
+            <div class="h-px w-full bg-emerald-200/10"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="px-3 text-xs text-emerald-50/55 bg-transparent">or</span>
+            </div>
+          </div>
+
+          <p class="text-sm text-emerald-50/65 text-center">
+            Don’t have an account?
+            <a href="/api/auth/register" class="text-emerald-200 hover:text-emerald-100 underline underline-offset-4">Create one</a>
+          </p>
+        </div>
+      </section>
     </div>
-
-    <h1>Welcome back</h1>
-    <p class="subtitle">Sign in to your monitoring dashboard</p>
-
-    <!-- Error / Success messages -->
-    <div class="message error"  id="errorMsg"></div>
-    <div class="message success" id="successMsg"></div>
-
-    <!-- Login Form -->
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Enter your username" autocomplete="username"/>
-    </div>
-
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password"/>
-    </div>
-
-    <button class="btn" id="loginBtn" onclick="handleLogin()">Sign In</button>
-
-    <div class="divider">or</div>
-
-    <div class="link-row">
-      Don't have an account? <a href="/api/auth/register">Create one</a>
-    </div>
-
-  </div>
+  </main>
 
   <script>
     // Allow Enter key to submit
@@ -291,16 +240,13 @@
       const password = document.getElementById('password').value;
       const btn      = document.getElementById('loginBtn');
 
-      // Clear old messages
       hideMessages();
 
-      // Basic validation
       if (!username || !password) {
         showError('Please fill in all fields.');
         return;
       }
 
-      // Show loading state
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span>Signing in...';
 
@@ -321,7 +267,6 @@
           btn.disabled = false;
           btn.innerHTML = 'Sign In';
         }
-
       } catch (err) {
         showError('Cannot connect to server. Is it running?');
         btn.disabled = false;
@@ -346,6 +291,5 @@
       document.getElementById('successMsg').classList.remove('show');
     }
   </script>
-
 </body>
 </html>
