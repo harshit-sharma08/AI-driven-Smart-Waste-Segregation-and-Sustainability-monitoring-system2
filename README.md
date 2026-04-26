@@ -19,10 +19,11 @@
 ---
 
 ## 🌐 Overview
+The AI-Driven Smart Waste Segregation and Sustainability Monitoring System is an innovative university-level hardware project that integrates computer vision, IoT devices, and web technologies to automate waste classification at the source.
 
-The **AI-Driven Smart Waste Segregation and Sustainability Monitoring System** is a university hardware project that combines computer vision, IoT hardware, and web technologies to automate waste classification at the point of disposal.
+It utilizes a MobileNetV2-based convolutional neural network (CNN) to analyze camera input and categorize waste into four types: Plastic, Paper, Organic, and Metal. Each prediction is recorded in a database, and real-time sustainability insights are displayed through an interactive web dashboard.
 
-A **MobileNetV2-based CNN model** identifies waste categories from a camera feed and classifies them into 4 categories — Plastic, Paper, Organic, and Metal. The system logs every prediction to a database and displays real-time sustainability statistics on a web dashboard. It also supports user authentication and will trigger physical bin sorting mechanisms via an ESP32 microcontroller.
+The system also includes user authentication features and is designed to control physical waste sorting mechanisms using an ESP32 microcontroller, enabling automated and efficient waste management.
 
 ## ▶️ How to Run (Detailed)
 
@@ -223,6 +224,7 @@ A default admin account is created automatically on first run:
 6. Servo opens the correct bin flap for that waste category
 7. Ultrasonic sensors continuously monitor bin fill levels
 8. Fill level data is sent to the dashboard for monitoring
+9.  Flask runs MobileNet and returns the predicted label
 
 
 ## 🚀 Future Improvements
