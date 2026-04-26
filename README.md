@@ -75,6 +75,13 @@ The system also includes user authentication features and is designed to control
                                      (Real-time Bin Level Monitoring)
                                      
 ---
+| Layer | Technology |
+|---|---|
+| AI/ML Model | TensorFlow, Keras (MobileNetV2), NumPy, Pillow |
+| Backend | Flask, Flask-Login, Flask-SQLAlchemy, Flask-Bcrypt |
+| Frontend | HTML, CSS, JavaScript, Chart.js |
+| Database | SQLite (Lightweight relational DB) |
+| Hardware | ESP32, Servo Motors, Ultrasonic Sensor, Camera Module |
 
 ## 🚀 Getting Started
 
