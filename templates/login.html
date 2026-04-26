@@ -290,19 +290,43 @@
 
     function showError(msg) {
       const el = document.getElementById('errorMsg');
-      el.textContent = msg;
-      el.classList.add('show');
+      
+      // Pehle se agar koi message dikh raha hai toh usey reset karo
+      el.classList.remove('show');
+      
+      // Chota sa timeout taaki CSS animation dobara trigger ho sake
+      setTimeout(() => {
+        el.textContent = msg;
+        el.classList.add('show');
+      }, 10);
+
+      // 4 seconds baad apne aap hide kar do (Optional)
+      setTimeout(() => {
+        el.classList.remove('show');
+      }, 4000);
     }
 
     function showSuccess(msg) {
       const el = document.getElementById('successMsg');
-      el.textContent = msg;
-      el.classList.add('show');
+      
+      // Resetting previous state
+      el.classList.remove('show');
+      
+      setTimeout(() => {
+        el.textContent = msg;
+        el.classList.add('show');
+      }, 10);
+
+      // Auto-hide success message after 3 seconds
+      setTimeout(() => {
+        el.classList.remove('show');
+      }, 3000);
     }
 
     function hideMessages() {
-      document.getElementById('errorMsg').classList.remove('show');
-      document.getElementById('successMsg').classList.remove('show');
+      // Dono messages ko ek saath select karke class remove kar di
+      const messages = document.querySelectorAll('.message');
+      messages.forEach(msg => msg.classList.remove('show'));
     }
   </script>
 </body>
