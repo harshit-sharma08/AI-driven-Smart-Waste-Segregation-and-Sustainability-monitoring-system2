@@ -40,17 +40,16 @@ The system also includes user authentication features and is designed to control
 ---
 
 ## ✨ Features
-
 | Feature | Status | Description |
 |---|---|---|
-| 🤖 AI Waste Classification | ✅ Done | MobileNetV2 classifies waste into 4 categories |
-| 📸 Image Upload & Prediction | ✅ Done | Upload image from browser, get instant result |
-| 📊 Sustainability Dashboard | ✅ Done | Charts for waste trends and recycling rate |
-| 🔐 User Authentication | ✅ Done | Register, login, logout with encrypted passwords |
-| 🗃️ Prediction Logging | ✅ Done | Every prediction stored in database with timestamp |
-| 📷 ESP32 Camera Integration | 🔄 Planned | Live camera feed from ESP32 for real-time scanning |
-| ⚙️ Hardware Bin Mechanism | 🔄 Planned | ESP32 controls servo motors for physical segregation |
-| 📡 Bin Fill Level Monitoring | 🔄 Planned | Ultrasonic sensor monitors how full each bin is |
+| 🤖 AI-Based Waste Classification | ✅ Completed | MobileNetV2 model categorizes waste into Plastic, Paper, Organic, and Metal |
+| 📸 Image Upload & Prediction | ✅ Completed | Users can upload images via the web interface and receive instant predictions |
+| 📊 Sustainability Dashboard | ✅ Completed | Interactive charts visualize waste trends and recycling performance |
+| 🔐 User Authentication System | ✅ Completed | Secure user registration, login, and logout with encrypted credentials |
+| 🗃️ Prediction Data Logging | ✅ Completed | All predictions are stored in the database along with timestamps |
+| 📷 ESP32 Camera Integration | 🔄 In Progress | Integration of live camera feed from ESP32 for real-time waste detection |
+| ⚙️ Smart Bin Mechanism | 🔄 In Progress | Servo motors controlled via ESP32 for automated waste segregation |
+| 📡 Bin Fill Level Monitoring | 🔄 In Progress | Ultrasonic sensors track and report bin fill levels in real-time |
 
 ---
 
