@@ -7,3 +7,5 @@ pillow
 tensorflow
 numpy
 pytorch
+Hardware requirements:
+- A modern GPU (NVIDIA or AMD) with at least 4GB of VRAM    - At least 16GB of RAM
