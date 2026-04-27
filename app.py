@@ -29,6 +29,7 @@ def load_user(user_id):
 MODEL_PATH = os.path.join("model","waste_classifier_model.keras")
 IMG_SIZE = (224,224)
 labels = ["metal","organic","paper","plastic"]
+THRESHOLD = 0.7
 BIN_MAP = {
   "metal":{"bin":"Grey Bin","color":"#808080"},
   "organic": {"bin":"Green Bin","color":"#32CD32"},
@@ -238,7 +239,16 @@ def esp32_trigger():
     img_bytes = request.data
     img       = Image.open(io.BytesIO(img_bytes))
     label, confidence = run(img)
+    if confidence < THRESHOLD:
+        return jsonify({"label" : "no_waste","confidence": round(confidence *100,2)}),200
     bin_info  = BIN_MAP.get(label, {"bin": "Unknown"})
+    servo_map = {
+        "plastic":0,
+        "paper":70,
+        "metal":110,
+        "organic":150
+    }
+    servo_angle = servo_map.get(label,-1)
     image_path = save_image(img, label)
 
     pred = Prediction(
@@ -253,6 +263,7 @@ def esp32_trigger():
         "label":      label,
         "confidence": round(confidence * 100, 2),
         "bin":        bin_info["bin"],
+        "servo": servo_angle
     }), 200
 
 if __name__ == "__main__":
