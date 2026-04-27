@@ -203,7 +203,6 @@ A default admin account is created automatically on first run:
 |---|---|---|
 | ESP32 | 1 | Main microcontroller + WiFi |
 | Servo Motor (SG90) | 4 | One per bin for physical segregation |
-| Ultrasonic Sensor (HC-SR04) | 4 | Monitor fill level of each bin |
 | IR Sensor | 1 | Detect when waste is placed |
 | ESP32-CAM | 1 | Capture waste image |
 | 5V Power Supply | 1 | Power the entire system |
@@ -240,7 +239,6 @@ This project is developed for educational purposes and is free to use for learni
 
 | Harshit Sharma |
 
-| Rachit Saxena |
 
 
 ---
