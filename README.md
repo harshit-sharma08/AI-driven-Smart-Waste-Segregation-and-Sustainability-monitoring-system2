@@ -19,87 +19,94 @@
 ---
 
 ## 🌐 Overview
+The AI-Driven Smart Waste Segregation and Sustainability Monitoring System is an innovative university-level hardware project that integrates computer vision, IoT devices, and web technologies to automate waste classification at the source.
 
-The **AI-Driven Smart Waste Segregation and Sustainability Monitoring System** is a university hardware project that combines computer vision, IoT hardware, and web technologies to automate waste classification at the point of disposal.
+It utilizes a MobileNetV2-based convolutional neural network (CNN) to analyze camera input and categorize waste into four types: Plastic, Paper, Organic, and Metal. Each prediction is recorded in a database, and real-time sustainability insights are displayed through an interactive web dashboard.
 
-A **MobileNetV2-based CNN model** identifies waste categories from a camera feed and classifies them into 4 categories — Plastic, Paper, Organic, and Metal. The system logs every prediction to a database and displays real-time sustainability statistics on a web dashboard. It also supports user authentication and will trigger physical bin sorting mechanisms via an ESP32 microcontroller.
+The system also includes user authentication features and is designed to control physical waste sorting mechanisms using an ESP32 microcontroller, enabling automated and efficient waste management.
+
+## ▶️ How to Run (Detailed)
+
+1. Clone the repository and navigate into the project folder.
+2. Install all required Python dependencies using `pip install -r requirements.txt`.
+3. Ensure the trained MobileNet model file is placed correctly inside the `model/` directory.
+4. Configure environment variables in the `.env` file.
+5. Start the Flask development server using `python app.py`.
+6. Open your browser and visit `http://127.0.0.1:5000`.
+7. Register a new account or use the default admin credentials to log in.
+
+> ⚠️ Make sure your system has Python 3.8+ and pip installed.
 
 ---
 
 ## ✨ Features
-
 | Feature | Status | Description |
 |---|---|---|
-| 🤖 AI Waste Classification | ✅ Done | MobileNetV2 classifies waste into 4 categories |
-| 📸 Image Upload & Prediction | ✅ Done | Upload image from browser, get instant result |
-| 📊 Sustainability Dashboard | ✅ Done | Charts for waste trends and recycling rate |
-| 🔐 User Authentication | ✅ Done | Register, login, logout with encrypted passwords |
-| 🗃️ Prediction Logging | ✅ Done | Every prediction stored in database with timestamp |
-| 📷 ESP32 Camera Integration | 🔄 Planned | Live camera feed from ESP32 for real-time scanning |
-| ⚙️ Hardware Bin Mechanism | 🔄 Planned | ESP32 controls servo motors for physical segregation |
-| 📡 Bin Fill Level Monitoring | 🔄 Planned | Ultrasonic sensor monitors how full each bin is |
+| 🤖 AI-Based Waste Classification | ✅ Completed | MobileNetV2 model categorizes waste into Plastic, Paper, Organic, and Metal |
+| 📸 Image Upload & Prediction | ✅ Completed | Users can upload images via the web interface and receive instant predictions |
+| 📊 Sustainability Dashboard | ✅ Completed | Interactive charts visualize waste trends and recycling performance |
+| 🔐 User Authentication System | ✅ Completed | Secure user registration, login, and logout with encrypted credentials |
+| 🗃️ Prediction Data Logging | ✅ Completed | All predictions are stored in the database along with timestamps |
+| 📷 ESP32 Camera Integration | 🔄 In Progress | Integration of live camera feed from ESP32 for real-time waste detection |
+| ⚙️ Smart Bin Mechanism | 🔄 In Progress | Servo motors controlled via ESP32 for automated waste segregation |
+| 📡 Bin Fill Level Monitoring | 🔄 In Progress | Ultrasonic sensors track and report bin fill levels in real-time |
 
 ---
 
-## 🏗️ System Architecture
-
-```
-[ Image Upload / ESP32 Camera ]
-              │
-              ▼
-   [ Flask Backend (app.py) ]
-         │           │
-         ▼           ▼
-  [ MobileNet     [ SQLite DB ]
-    .keras Model]  (users + predictions)
-         │
-         ▼
-  [ Prediction Result ]
-         │
-         ├──► [ Web Dashboard ] ── (Charts, History, Stats)
-         │
-         └──► [ ESP32 ] ── (Servo Motors → Physical Bins)
-                    │
-                    └──► [ Ultrasonic Sensor → Bin Fill Level ]
-```
-
+## 🏗️ System Architecture[ Image Upload / ESP32 Camera Module ]
+                 │
+                 ▼
+        [ Flask Application (app.py) ]
+             │              │
+             ▼              ▼
+ [ MobileNetV2 Model ]   [ SQLite Database ]
+   (.keras format)        (users & predictions)
+             │
+             ▼
+     [ Prediction Output ]
+             │
+     ├──────────────► [ Web Dashboard Interface ]
+     │                 (Charts, History, Analytics)
+     │
+     └──────────────► [ ESP32 Controller ]
+                         (Servo Motors → Smart Bins)
+                              │
+                              └──► [ Ultrasonic Sensor ]
+                                     (Real-time Bin Level Monitoring)
+                                     
 ---
-
-## 🛠️ Tech Stack
-
 | Layer | Technology |
 |---|---|
-| AI Model | TensorFlow / Keras, MobileNetV2, NumPy, Pillow |
+| AI/ML Model | TensorFlow, Keras (MobileNetV2), NumPy, Pillow |
 | Backend | Flask, Flask-Login, Flask-SQLAlchemy, Flask-Bcrypt |
-| Frontend | HTML5, CSS3, JavaScript, Chart.js |
-| Database | SQLite |
+| Frontend | HTML, CSS, JavaScript, Chart.js |
+| Database | SQLite (Lightweight relational DB) |
 | Hardware | ESP32, Servo Motors, Ultrasonic Sensor, Camera Module |
 
----
 
-## 📁 Folder Structure
 
-```
-waste-segregation/
+
+waste-segregation-system/
 │
-├── app.py                          # Main Flask backend
-├── requirements.txt                # Python dependencies
-├── .env                            # Secret keys (not on GitHub)
-├── .gitignore                      # Files excluded from GitHub
+├── app.py                          # Core Flask application
+├── requirements.txt                # Project dependencies
+├── .env                            # Environment variables (excluded)
+├── .gitignore                      # Ignored files configuration
 │
 ├── model/
-│   └── mobilenet_waste_classifier.keras   # Trained MobileNet model (not on GitHub)
+│   └── mobilenet_waste_classifier.keras   # Pre-trained CNN model (not committed)
 │
 ├── templates/
-│   ├── login.html                  # Login page
-│   ├── register.html               # Register page
-│   └── dashboard.html              # Main dashboard
+│   ├── login.html                  # User login interface
+│   ├── register.html               # User registration page
+│   └── dashboard.html              # Analytics dashboard
 │
 └── static/
-    └── uploads/                    # Saved prediction images
-```
+    └── uploads/                    # Stored input images for predictions
 
----
+
+
+    
 
 ## 🚀 Getting Started
 
@@ -211,8 +218,20 @@ A default admin account is created automatically on first run:
 6. Servo opens the correct bin flap for that waste category
 7. Ultrasonic sensors continuously monitor bin fill levels
 8. Fill level data is sent to the dashboard for monitoring
+9.  Flask runs MobileNet and returns the predicted label
+
+
+## 🚀 Future Improvements
+
+- Real-time ESP32 camera streaming integration
+- Cloud deployment (AWS / Azure)
+- Mobile app support
 
 ---
+
+## 📄 License
+
+This project is developed for educational purposes and is free to use for learning and research.
 
 ## 👥 Contributors
 
