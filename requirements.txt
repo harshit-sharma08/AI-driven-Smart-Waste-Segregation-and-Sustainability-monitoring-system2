@@ -1,0 +1,12 @@
+flask
+flask-sqlalchemy
+flask-bcrypt
+flask-cors
+flask-login
+pillow
+tensorflow
+numpy
+pytorch
+Hardware requirements:
+- A modern GPU (NVIDIA or AMD) with at least 4GB of VRAM    - At least 16GB of RAM  
+- A multi-core CPU (Intel i5 or AMD Ryzen 5 or better)    - At least 10GB of free disk space for the project and dependencies

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — WasteAI  </title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui'],
+            display: ['Syne', 'ui-sans-serif', 'system-ui'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --bg0: #060a07;
+      --bg1: #06140b;
+      --card: rgba(17, 25, 40, 0.55);
+      --card2: rgba(15, 23, 42, 0.55);
+      --border: rgba(134, 239, 172, 0.18);
+      --text: #ecfdf5;
+      --muted: rgba(236, 253, 245, 0.68);
+      --green: #22c55e;
+      --error: #ef4444;
+    }
+
+    body {
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(34, 197, 94, 0.20), transparent 55%),
+                  radial-gradient(900px 500px at 85% 80%, rgba(134, 239, 172, 0.14), transparent 60%),
+                  linear-gradient(135deg, var(--bg0), var(--bg1));
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .glass {
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--border);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(14px);
+    }
+
+    .bg-blob {
+      position: fixed;
+      border-radius: 9999px;
+      filter: blur(60px);
+      opacity: 0.20;
+      pointer-events: none;
+      animation: floaty 10s ease-in-out infinite;
+    }
+    .b1 { width: 520px; height: 520px; left: -180px; top: -220px; background: rgba(34,197,94,0.75); }
+    .b2 { width: 420px; height: 420px; right: -180px; bottom: -220px; background: rgba(134,239,172,0.55); animation-delay: 1.6s; }
+    .b3 { width: 240px; height: 240px; left: 55%; top: 45%; background: rgba(34,197,94,0.35); animation-delay: 3.1s; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+      50%      { transform: translateY(-22px) translateX(10px) scale(1.05); }
+    }
+/* Smooth and Professional Animations */
+    .fade-up { 
+        animation: fadeUp 550ms cubic-bezier(0.16, 1, 0.3, 1) both; 
+    }
+    
+    @keyframes fadeUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(20px) scale(0.98); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+    }
+
+    /* Message Base Styling */
+    .message {
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+        margin-top: 8px;
+        backdrop-filter: blur(4px); /* Modern Glassmorphism touch */
+    }
+
+    /* Improved Error State */
+    .message.error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #f87171;
+    }
+
+    /* Improved Success State */
+    .message.success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: #4ade80;
+    }
+
+    /* Message Visibility & Animation */
+    .message.show { 
+        display: flex; 
+        align-items: center;
+        animation: msgIn 300ms cubic-bezier(0.4, 0, 0.2, 1) both; 
+    }
+
+    @keyframes msgIn { 
+        from { opacity: 0; transform: translateY(-8px); } 
+        to { opacity: 1; transform: translateY(0); } 
+    }
+  </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden">
+  <div class="bg-blob b1"></div>
+  <div class="bg-blob b2"></div>
+  <div class="bg-blob b3"></div>
+
+  <main class="relative min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="w-full max-w-5xl grid gap-8 lg:grid-cols-2 items-stretch">
+      <!-- Brand / Marketing panel -->
+      <section class="glass fade-up rounded-3xl p-7 sm:p-10 hidden lg:flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="h-11 w-11 rounded-2xl bg-emerald-400/20 border border-emerald-300/20 grid place-items-center">
+              <span class="text-xl">♻️</span>
+            </div>
+            <div class="font-display text-xl tracking-tight">
+              Waste<span class="text-emerald-300">AI</span>
+            </div>
+          </div>
+
+          <h1 class="mt-10 font-display text-4xl leading-tight tracking-tight">
+            Smart waste segregation,
+            <span class="text-emerald-200">clean dashboards</span>.
+          </h1>
+          <p class="mt-4 text-sm text-emerald-50/70 leading-relaxed max-w-md">
+            Upload a photo, get an instant classification, and track recycling metrics over time —
+            in a fast, modern monitoring dashboard.
+          </p>
+
+          <div class="mt-8 grid gap-3 text-sm text-emerald-50/75">
+            <div class="flex gap-3">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-300"></span>
+              <p><span class="text-emerald-50">Real-time</span> predictions with confidence.</p>
+            </div>
+            <div class="flex gap-3">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-300"></span>
+              <p><span class="text-emerald-50">Insights</span> via charts + scan history.</p>
+            </div>
+            <div class="flex gap-3">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-300"></span>
+              <p><span class="text-emerald-50">Secure</span> user sessions with Flask-Login.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 pt-6 border-t border-emerald-200/10 text-xs text-emerald-50/55">
+          Tip: Use a well-lit image for best accuracy.
+        </div>
+      </section>
+
+      <!-- Auth card -->
+      <section class="glass fade-up rounded-3xl p-7 sm:p-10">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <div class="font-display text-2xl tracking-tight">Welcome back</div>
+            <p class="mt-1 text-sm text-emerald-50/70">Sign in to your monitoring dashboard</p>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 rounded-full border border-emerald-200/10 bg-black/10 px-3 py-1 text-xs text-emerald-50/60">
+            <span class="h-2 w-2 rounded-full bg-emerald-300/80"></span>
+            Online
+          </div>
+        </div>
+
+        <!-- Error / Success messages (IDs preserved for JS) -->
+        <div class="mt-6 space-y-3">
+          <div class="message error" id="errorMsg"></div>
+          <div class="message success" id="successMsg"></div>
+        </div>
+
+        <!-- Fields (IDs preserved for JS; name attrs added but harmless) -->
+        <div class="mt-6 space-y-4">
+          <div>
+            <label for="username" class="block text-xs font-semibold tracking-wide text-emerald-50/60 uppercase">Username</label>
+            <div class="mt-2">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                placeholder="Enter your username"
+                class="w-full rounded-2xl bg-black/25 border border-emerald-200/10 px-4 py-3 text-emerald-50 placeholder:text-emerald-50/35 outline-none transition focus:border-emerald-300/40 focus:ring-4 focus:ring-emerald-400/10"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="password" class="block text-xs font-semibold tracking-wide text-emerald-50/60 uppercase">Password</label>
+            <div class="mt-2">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                class="w-full rounded-2xl bg-black/25 border border-emerald-200/10 px-4 py-3 text-emerald-50 placeholder:text-emerald-50/35 outline-none transition focus:border-emerald-300/40 focus:ring-4 focus:ring-emerald-400/10"
+              />
+            </div>
+          </div>
+
+          <button
+            class="w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-emerald-300 text-slate-950 font-display font-extrabold tracking-tight py-3.5 transition hover:brightness-110 active:translate-y-[1px] disabled:opacity-60 disabled:cursor-not-allowed"
+            id="loginBtn"
+            onclick="handleLogin()"
+          >
+            Sign In
+          </button>
+
+          <div class="relative py-2">
+            <div class="h-px w-full bg-emerald-200/10"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="px-3 text-xs text-emerald-50/55 bg-transparent">or</span>
+            </div>
+          </div>
+
+          <p class="text-sm text-emerald-50/65 text-center">
+            Don’t have an account?
+            <a href="/api/auth/register" class="text-emerald-200 hover:text-emerald-100 underline underline-offset-4">Create one</a>
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Allow Enter key to submit
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    async function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('loginBtn');
+
+      hideMessages();
+
+      if (!username || !password) {
+        showError('Please fill in all fields.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Signing in...';
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showSuccess('Login successful! Redirecting...');
+          setTimeout(() => window.location.href = '/dashboard', 1000);
+        } else {
+          showError(data.error || 'Login failed. Please try again.');
+          btn.disabled = false;
+          btn.innerHTML = 'Sign In';
+        }
+      } catch (err) {
+        showError('Cannot connect to server. Is it running?');
+        btn.disabled = false;
+        btn.innerHTML = 'Sign In';
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      
+      // Pehle se agar koi message dikh raha hai toh usey reset karo
+      el.classList.remove('show');
+      
+      // Chota sa timeout taaki CSS animation dobara trigger ho sake
+      setTimeout(() => {
+        el.textContent = msg;
+        el.classList.add('show');
+      }, 10);
+
+      // 4 seconds baad apne aap hide kar do (Optional)
+      setTimeout(() => {
+        el.classList.remove('show');
+      }, 4000);
+    }
+
+    function showSuccess(msg) {
+      const el = document.getElementById('successMsg');
+      
+      // Resetting previous state
+      el.classList.remove('show');
+      
+      setTimeout(() => {
+        el.textContent = msg;
+        el.classList.add('show');
+      }, 10);
+
+      // Auto-hide success message after 3 seconds
+      setTimeout(() => {
+        el.classList.remove('show');
+      }, 3000);
+    }
+
+    function hideMessages() {
+      // Dono messages ko ek saath select karke class remove kar di
+      const messages = document.querySelectorAll('.message');
+      messages.forEach(msg => msg.classList.remove('show'));
+    }
+  </script>
+</body>
+</html>
